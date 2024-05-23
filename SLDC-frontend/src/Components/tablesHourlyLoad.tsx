@@ -15,20 +15,31 @@ const rowData: IRowData[] = [
 const MyTableHourly = () => {
   return (
     <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
-       <Table
+      <Table
         variant={TableProperties.variant}
         backgroundColor={TableProperties.backgroundColor}
         color={TableProperties.color}
-      > 
+      >
         <Thead>
           <Tr>
-            <Th textAlign="center" color={TableProperties.color}>Timestamp</Th>
-            <Th textAlign="center" color={TableProperties.color}>West Side</Th>
+            <Th textAlign="center" color={TableProperties.color}>
+              Timestamp
+            </Th>
+            <Th textAlign="center" color={TableProperties.color}>
+              West Side
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
-          {rowData.map((row, index) => (
-            <Tr key={index} bg={index % 2 === 0 ? TableProperties.backgroundColor : TableProperties.stripeColor}>
+          {rowData.map((row: IRowData) => (
+            <Tr
+              key={row.time}
+              bg={
+                rowData.indexOf(row) % 2 === 0
+                  ? TableProperties.backgroundColor
+                  : TableProperties.stripeColor
+              }
+            >
               <Td textAlign="center">{row.time}</Td>
               <Td textAlign="center">{row.value}</Td>
             </Tr>
@@ -37,6 +48,6 @@ const MyTableHourly = () => {
       </Table>
     </Box>
   );
-}
+};
 
 export default MyTableHourly;

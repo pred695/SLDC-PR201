@@ -1,4 +1,3 @@
-import React from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 
@@ -18,24 +17,37 @@ const rowData: IRowData[] = [
   { time: '18:45', actual: '2890.30', forecast: '2890.30' },
 ];
 
-const MyTableTotal: React.FC = () => {
+const MyTableTotal = () => {
   return (
     <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
-       <Table
+      <Table
         variant={TableProperties.variant}
         backgroundColor={TableProperties.backgroundColor}
         color={TableProperties.color}
-      > 
+      >
         <Thead>
           <Tr>
-            <Th textAlign="center" color={TableProperties.color}>Time</Th>
-            <Th textAlign="center" color={TableProperties.color}>Actual</Th>
-            <Th textAlign="center" color={TableProperties.color}>Forecast</Th>
+            <Th textAlign="center" color={TableProperties.color}>
+              Time
+            </Th>
+            <Th textAlign="center" color={TableProperties.color}>
+              Actual
+            </Th>
+            <Th textAlign="center" color={TableProperties.color}>
+              Forecast
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
-          {rowData.map((row, index) => (
-            <Tr key={index} bg={index % 2 === 0 ? TableProperties.backgroundColor : TableProperties.stripeColor}>
+          {rowData.map((row: IRowData) => (
+            <Tr
+              key={row.time}
+              bg={
+                rowData.indexOf(row) % 2 === 0
+                  ? TableProperties.backgroundColor
+                  : TableProperties.stripeColor
+              }
+            >
               <Td textAlign="center">{row.time}</Td>
               <Td textAlign="center">{row.actual}</Td>
               <Td textAlign="center">{row.forecast}</Td>
@@ -45,6 +57,6 @@ const MyTableTotal: React.FC = () => {
       </Table>
     </Box>
   );
-}
+};
 
 export default MyTableTotal;
