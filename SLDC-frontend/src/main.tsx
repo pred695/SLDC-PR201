@@ -15,17 +15,17 @@ const breakpoints: IBreakPoints = {
 };
 
 const colors: IColors = {
-  sldcLightBlue: "#8A99DD",
-  sldcDarkBlue: "#324C89",
-  sldcWhite: "#FFFFFF",
-  sldcBlack: "#131313",
-  sldcGray: "#262A33",
-}
+  sldcLightBlue: '#8A99DD',
+  sldcDarkBlue: '#324C89',
+  sldcWhite: '#FFFFFF',
+  sldcBlack: '#131313',
+  sldcGray: '#262A33',
+};
 
 const theme: ITheme = extendTheme({
   // IBreakPoints: BreakPoints,
   breakpoints,
-  colors, 
+  colors,
 }) as ITheme;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

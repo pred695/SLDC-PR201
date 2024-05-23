@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
+import { Box, Heading, Center } from '@chakra-ui/react';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
-import { Box, Heading, Center } from '@chakra-ui/react';
-import MyTableHourly from './Components/tablesHourlyLoad';
-import MyTableTotal from './Components/tablesTotalLoad';
+import MyTableHourly from './components/tablesHourlyLoad';
+import MyTableTotal from './components/tablesTotalLoad';
 
-const App = (): JSX.Element => {
+const App: React.FC = (): JSX.Element => {
   return (
     <>
       <Navbar />
