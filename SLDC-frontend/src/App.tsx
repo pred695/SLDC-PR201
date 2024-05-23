@@ -1,12 +1,15 @@
-import { Box, Heading, Center } from '@chakra-ui/react';
+import { Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Login from './pages/Login';
 
 const App = (): JSX.Element => {
   return (
-    <Box>
-      <Center>
-        <Heading>Project Setup Done!</Heading>
-      </Center>
-    </Box>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/signin" element={<Login />} />
+      </Routes>
+    </>
   );
 };
 export default App;
