@@ -17,7 +17,7 @@ const rowData: IRowData[] = [
   { time: '18:45', actual: '2890.30', forecast: '2890.30' },
 ];
 
-const MyTableTotal = () => {
+const MyTableTotal = (): JSX.Element => {
   return (
     <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
       <Table

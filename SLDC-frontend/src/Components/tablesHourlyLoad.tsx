@@ -12,7 +12,7 @@ const rowData: IRowData[] = [
   { time: '18:45', value: '2890.30' },
 ];
 
-const MyTableHourly = () => {
+const MyTableHourly = (): JSX.Element => {
   return (
     <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
       <Table

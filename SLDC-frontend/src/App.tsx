@@ -7,8 +7,8 @@ const App = (): JSX.Element => {
     <Box>
       <Center>
         <Heading>Project Setup Done!</Heading>
-        <MyTableHourly/>
-        <MyTableTotal/>
+        <MyTableHourly />
+        <MyTableTotal />
       </Center>
     </Box>
   );
