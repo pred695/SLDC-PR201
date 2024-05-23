@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 
 interface IRowData {
@@ -21,7 +21,11 @@ const rowData: IRowData[] = [
 const MyTableTotal: React.FC = () => {
   return (
     <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
-      <Table {...TableProperties}>
+       <Table
+        variant={TableProperties.variant}
+        backgroundColor={TableProperties.backgroundColor}
+        color={TableProperties.color}
+      > 
         <Thead>
           <Tr>
             <Th textAlign="center" color={TableProperties.color}>Time</Th>
