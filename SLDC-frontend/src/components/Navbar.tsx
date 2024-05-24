@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { GoOrganization, GoTriangleDown, GoTriangleUp } from 'react-icons/go';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const menuList: { title: string; items: string[] }[] = [
@@ -118,7 +119,9 @@ const Navbar: React.FC = () => {
       </HStack>
       <HStack fontWeight="bold" gap={6}>
         <Text>Account</Text>
-        <Text>Login</Text>
+        <Link to="/signin">
+          <Text>Login</Text>
+        </Link>
       </HStack>
     </Flex>
   );
