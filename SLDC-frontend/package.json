@@ -14,13 +14,16 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@observablehq/plot": "^0.6.14",
+    "@vitejs/plugin-react": "^4.2.1",
+    "date-fns": "^3.6.0",
     "framer-motion": "^11.2.5",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.23.1",
-    "vite": "^5.2.0",
-    "@vitejs/plugin-react": "^4.2.1"
+    "vite": "^5.2.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.0.1",

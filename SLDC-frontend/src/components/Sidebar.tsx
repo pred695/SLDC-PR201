@@ -34,7 +34,7 @@ const Sidebar: React.FC = () => {
       bgColor="sldcLightBlue"
       top="4.5rem"
       bottom={0}
-      w="15rem"
+      w="12rem"
       px="1.5rem"
       pt="1.5rem"
     >
@@ -55,7 +55,7 @@ const Sidebar: React.FC = () => {
                       }
                       _hover={{ bg: 'sldcDarkBlue' }}
                       justifyContent="left"
-                      w="12rem"
+                      w="9rem"
                       leftIcon={<TbPointFilled />}
                       onClick={() => onClick(subValue)}
                     >
