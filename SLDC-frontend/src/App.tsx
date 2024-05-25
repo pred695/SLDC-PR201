@@ -10,6 +10,7 @@ import OutlineGraph from './graphs/OutlineGraph';
 import MainGraph from './graphs/MainGraph';
 import { outlineData } from './tempData/outlineData';
 import { mainData, labels } from './tempData/mainData';
+// import MyTableHourlyAllzones from './components/tablesHourlyLoadAllzones';
 
 const App: React.FC = (): JSX.Element => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = (): JSX.Element => {
           <Heading>Project Setup Done!</Heading>
           <MyTableHourly />
           <MyTableTotal />
+          <MyTableHourlyAllzones />
         </Center>
       </Box> */}
       <Routes>
