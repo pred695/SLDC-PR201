@@ -35,11 +35,26 @@ const rowData: IRowData[] = [
     raliwayZoneValue: '2888.20',
     totalValue: '2888.20',
   },
+  {
+    time: '18:45',
+    eastZoneValue: '2887.15',
+    westZoneValue: '2889.20',
+    centralZoneValue: '2888.20',
+    raliwayZoneValue: '2888.20',
+    totalValue: '2888.20',
+  },
 ];
 
 const MyTableHourlyAllzones = (): JSX.Element => {
   return (
-    <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
+    <Box
+      display={{ base: 'block', md: 'flex' }}
+      height={{ base: 'auto', md: 'auto' }}
+      overflowY="auto"
+      borderRadius={TableProperties.borderRadius}
+      pl={['0rem', '0rem', '0rem']}
+      maxHeight="20vh"
+    >
       <Table
         variant={TableProperties.variant}
         backgroundColor={TableProperties.backgroundColor}

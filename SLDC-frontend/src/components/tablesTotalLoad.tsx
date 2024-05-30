@@ -15,11 +15,28 @@ const rowData: IRowData[] = [
   { time: '18:45', actual: '2890.30', forecast: '2890.30' },
   { time: '18:30', actual: '2889.20', forecast: '2889.20' },
   { time: '18:45', actual: '2890.30', forecast: '2890.30' },
+  { time: '18:15', actual: '2887.15', forecast: '2887.15' },
+  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
+  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
+  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
+  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
+  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
+  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
+  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
+  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
+  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
+  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
 ];
 
 const MyTableTotal = (): JSX.Element => {
   return (
-    <Box overflow="hidden" borderRadius={TableProperties.borderRadius}>
+    <Box
+      display={{ base: 'block', md: 'block' }}
+      width="100%"
+      overflowY="auto"
+      borderRadius={TableProperties.borderRadius}
+      maxHeight="100vh"
+    >
       <Table
         variant={TableProperties.variant}
         backgroundColor={TableProperties.backgroundColor}

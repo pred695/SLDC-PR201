@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { Box, Heading, Center, Spacer } from '@chakra-ui/react';
-import { VStack } from "@chakra-ui/react";
+import { Box, Center, VStack } from '@chakra-ui/react';
 import AreaChart from 'react-apexcharts';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -12,23 +11,15 @@ import MainGraph from './graphs/MainGraph';
 import { outlineData } from './tempData/outlineData';
 import { mainData, labels } from './tempData/mainData';
 import MyTableHourlyAllzones from './components/tablesHourlyLoadAllzones';
+import Homepage from './pages/Homepage';
 
 const App: React.FC = (): JSX.Element => {
   return (
     <>
       <Navbar />
-      <Sidebar />
-      <Box>
-        <Center>
-          {/* <Heading>Project Setup Done!</Heading> */}
-          <VStack spacing={15} marginTop={20}>
-            <MyTableHourly />
-            <MyTableTotal />
-            <MyTableHourlyAllzones />
-          </VStack>
-        </Center>
-      </Box>
+      {/* <Sidebar /> */}
       <Routes>
+        <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<Login />} />
         <Route
           path="/mainGraph"
