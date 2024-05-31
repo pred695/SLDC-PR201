@@ -138,7 +138,7 @@ export default function DailyReport() {
   }, [demand]);
 
   return (
-    <Flex direction={'column'} ml={'250px'}>
+    <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={'60%'}>
       <Flex>Daily Report</Flex>
       <Flex>{legends}</Flex>
       <Flex ref={graphRef as LegacyRef<HTMLDivElement>} />
