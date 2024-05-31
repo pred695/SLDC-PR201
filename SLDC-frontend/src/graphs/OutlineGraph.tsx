@@ -1,6 +1,7 @@
 import AreaChart from 'react-apexcharts';
 import { Load } from '../types/Load.tsx';
 import { Box, Flex } from '@chakra-ui/react';
+import { ApexOptions } from 'apexcharts';
 
 interface OutlineGraphProps {
   data: Load[];
@@ -13,12 +14,9 @@ export default function OutlineGraph({
   color,
   gradientColor,
 }: OutlineGraphProps) {
-  const options = {
+  const options: ApexOptions = {
     chart: {
       toolbar: {
-        show: false,
-      },
-      labels: {
         show: false,
       },
       sparkline: {
@@ -68,7 +66,7 @@ export default function OutlineGraph({
   return(
     <Flex w="100vw" overflow={'hidden'} pb={'4rem'} h="100vh" pt="10rem" bgColor="sldcBlack" color="sldcWhite" justify={'center'} align={'center'}>
       <Box border={'2px solid #36b5d8'} bgColor={'#262A33'} padding={'1rem 4rem'} borderRadius={'10px'}>
-      <AreaChart type={'area'} series={series} options={options} width='300%'/>
+      <AreaChart type={'area'} series={series} options:JSON={options} width='300%'/>
       </Box>
     </Flex>
   ) 

@@ -1,8 +1,9 @@
 import { Box, Flex } from '@chakra-ui/react';
-import MainGraph from '../graphs/MainGraph';
-import { mainData, labels } from '../tempData/mainData';
+// import MainGraph from '../graphs/MainGraph';
+// import { mainData, labels } from '../tempData/mainData';
 import MyTableHourlyAllzones from '../components/tablesHourlyLoadAllzones';
 import MyTableTotal from '../components/tablesTotalLoad';
+import DailyReport from '../graphs/DailyReport';
 
 const Homepage = (): JSX.Element => {
   return (
@@ -29,7 +30,8 @@ const Homepage = (): JSX.Element => {
             ml={['', '', '-22rem']}
             mr={['', '', '-20rem']}
           >
-            <MainGraph data={mainData} labels={labels} />
+            <DailyReport />
+            {/* <MainGraph data={mainData} labels={labels} /> */}
           </Box>
           <Box px="2rem" pt="2rem" maxWidth={['100%', '100%', '100%']}>
             <MyTableHourlyAllzones />

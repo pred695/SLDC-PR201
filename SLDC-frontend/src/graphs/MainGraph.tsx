@@ -1,25 +1,28 @@
 import Chart from 'react-apexcharts';
-import { format } from 'date-fns';
-import { Box, Flex } from '@chakra-ui/react';
-import { color } from 'framer-motion';
 import convertRemToPixels from '../utils/remToPixel.tsx';
-import capitalize from '../utils/capitalize.tsx';
-import { GraphInputData } from '../types/GraphInputData.tsx';
+import { Box, Flex } from '@chakra-ui/react';
+import capitalize from '../utils/capitalize';
+import { GraphInputData } from '../types/GraphInputData';
+import { ApexOptions } from 'apexcharts';
 
 interface MainGraphProps {
   data: GraphInputData[];
   labels: string[];
 }
 
-export default function MainGraph({ data, labels }: MainGraphProps) {
-  const series: any[] = data.map((d) => ({
+export default function MainGraph({
+  data,
+  labels,
+}: MainGraphProps): JSX.Element {
+  const series = data.map((d: any) => ({
     name: capitalize(d.zone_name),
     type: d.type,
     data: d.data,
   }));
 
-  const options = {
+  const options: ApexOptions = {
     chart: {
+      type: 'area',
       toolbar: {
         show: true,
         tools: {
@@ -68,8 +71,8 @@ export default function MainGraph({ data, labels }: MainGraphProps) {
     yaxis: {
       labels: {
         show: true,
-        formatter(value: number) {
-          return `${value.toFixed(2)} MW`;
+        formatter: function (value: number) {
+          return value.toFixed(2) + ' MW';
         },
       },
     },
