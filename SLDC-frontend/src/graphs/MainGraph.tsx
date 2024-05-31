@@ -1,25 +1,28 @@
-import { GraphInputData } from '../types/GraphInputData.tsx';
-import capitalize from '../utils/capitalize.tsx';
 import Chart from 'react-apexcharts';
-import { format } from 'date-fns';
-import convertRemToPixels from '../utils/remToPixel.tsx';
 import { Box, Flex } from '@chakra-ui/react';
-import { color } from 'framer-motion';
+import convertRemToPixels from '../utils/remToPixel';
+import capitalize from '../utils/capitalize';
+import { GraphInputData } from '../types/GraphInputData';
+import { ApexOptions } from 'apexcharts';
 
 interface MainGraphProps {
   data: GraphInputData[];
   labels: string[];
 }
 
-export default function MainGraph({ data, labels }: MainGraphProps) {
-  const series: any[] = data.map((d) => ({
+export default function MainGraph({
+  data,
+  labels,
+}: MainGraphProps): JSX.Element {
+  const series = data.map((d: any) => ({
     name: capitalize(d.zone_name),
     type: d.type,
     data: d.data,
   }));
 
-  const options = {
+  const options: ApexOptions = {
     chart: {
+      type: 'area',
       toolbar: {
         show: true,
         tools: {
@@ -68,17 +71,32 @@ export default function MainGraph({ data, labels }: MainGraphProps) {
     yaxis: {
       labels: {
         show: true,
-        formatter: function (value: number) {
-          return value.toFixed(2) + ' MW';
-        },
+        formatter: (value: number) => `${value.toFixed(2)} MW`,
       },
     },
   };
 
   return (
-    <Flex w="100vw" overflow={'hidden'} pb={'4rem'} h="100vh" pt="10rem" bgColor="sldcBlack" color="sldcWhite" justify={'center'} align={'center'}>
-      <Box w={'60vw'} color={'#000'} border={'2px solid #36b5d8'} bgColor={'#262A33'} padding={'1rem 4rem'} borderRadius={'10px'}>
-        <Chart series={series} type={'area'} options={options} />
+    <Flex
+      w="100vw"
+      overflow="hidden"
+      pb="4rem"
+      h="100vh"
+      pt="10rem"
+      bgColor="sldcBlack"
+      color="sldcWhite"
+      justify="center"
+      align="center"
+    >
+      <Box
+        w="60vw"
+        color="#000"
+        border="2px solid #36b5d8"
+        bgColor="#262A33"
+        padding="1rem 4rem"
+        borderRadius="10px"
+      >
+        <Chart series={series} type="area" options={options} />
       </Box>
     </Flex>
   );

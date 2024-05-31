@@ -1,3 +1,3 @@
-export default function convertRemToPixels(rem) {
+export default function convertRemToPixels(rem:number): number {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
   }
