@@ -2,13 +2,19 @@ import { LegacyRef, useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import GraphLegend from './GraphLegend';
 import * as Plot from '@observablehq/plot';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Button } from '@chakra-ui/react';
 
 const screenWidth = window.screen.width;
 
+interface DemandData {
+  time: string;
+  actual: number;
+  forecast: number;
+}
+
 export default function DailyReport() {
-  const generateData = () => {
-    const data = [];
+  const generateData = (): DemandData[] => {
+    const data: DemandData[] = [];
     const now = new Date();
     for (let i = 0; i < 24; i++) {
       const time = new Date(now.getTime() + i * 3600000).toISOString();
@@ -18,18 +24,36 @@ export default function DailyReport() {
     }
     return data;
   };
-  const [demand, setDemand] = useState<{ time: string; actual: number; forecast: number; }[]>([]);
-
+  const [demand, setDemand] = useState<DemandData[]>([]);
+  const [minTime, setMinTime] = useState<string | null>(null);
+  const [maxTime, setMaxTime] = useState<string | null>(null);
   const graphRef = useRef<HTMLDivElement>(null);
   const [actualLoadPointed, setActualLoadPointed] = useState<number>(0);
   const [forecastPointed, setForecastPointed] = useState<number>(0);
   const [error, setError] = useState<number | undefined>();
+  const [plotInstance, setPlotInstance] = useState<any>(null);
 
   useEffect(() => {
-    setDemand(() => generateData());
-    if (!demand.length) {
+    const data = generateData();
+    setDemand(data);
+
+    if (data.length === 0) {
       return;
     }
+    let minPoint = data[0];
+    let maxPoint = data[0];
+
+    data.forEach(point => {
+      if (point.actual < minPoint.actual) {
+        minPoint = point;
+      }
+      if (point.actual > maxPoint.actual) {
+        maxPoint = point;
+      }
+    });
+
+    setMinTime(minPoint.time);
+    setMaxTime(maxPoint.time);
   }, []);
 
   useEffect(() => {
@@ -68,23 +92,24 @@ export default function DailyReport() {
           demand,
           Plot.pointerX({
             x: 'time',
-            stroke: 'green',
-            strokewidth: '20px',
+            stroke: 'blue',
+            strokewidth: 3,
+            strokeOpacity: 1,
           })
         ),
         Plot.textX(
           demand,
           Plot.pointerX({
             x: 'time',
-            dy: -5,
-            frameAnchor: 'bottom',
-            fontSize: 15,
+            dy: -10,
+            frameAnchor: 'top',
+            fontSize: 20,
             text: (d) => format(new Date(d.time), 'HH:mm'),
           })
         ),
       ],
     });
-
+    setPlotInstance(plot);
     graphRef.current.append(plot);
 
     plot.addEventListener('input', () => {
@@ -137,11 +162,40 @@ export default function DailyReport() {
     }
   }, [demand]);
 
+  const handleMinClick = () => {
+    if (minTime && plotInstance) {
+      const minPoint = demand.find((d) => d.time === minTime);
+      if (minPoint) {
+        setActualLoadPointed(minPoint.actual);
+        setForecastPointed(minPoint.forecast);
+        plotInstance.dispatchEvent(new CustomEvent('pointer', { detail: { time: minTime } }));
+      }
+    }
+  };
+
+  const handleMaxClick = () => {
+    if (maxTime && plotInstance) {
+      const maxPoint = demand.find((d) => d.time === maxTime);
+      if (maxPoint) {
+        setActualLoadPointed(maxPoint.actual);
+        setForecastPointed(maxPoint.forecast);
+        plotInstance.dispatchEvent(new CustomEvent('pointer', { detail: { time: maxTime } }));
+      }
+    }
+  };
+
   return (
     <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={'60%'}>
       <Flex>Daily Report</Flex>
-      <Flex>{legends}</Flex>
+      <Flex justify={'space-between'}>
+        {legends}
+        <Flex gap={'10px'}>
+          <Button onClick={handleMinClick}>Min</Button>
+          <Button onClick={handleMaxClick}>Max</Button>
+        </Flex>
+      </Flex>
       <Flex ref={graphRef as LegacyRef<HTMLDivElement>} />
+
       <Flex>
         Error rate: {error ? error : '-'}%
       </Flex>
