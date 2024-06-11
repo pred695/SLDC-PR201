@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+// eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 
 const sequelize = new Sequelize(process.env.DB_URL, {
