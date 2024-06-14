@@ -5,6 +5,7 @@ const colors = require('colors');
 // eslint-disable-next-line no-unused-vars
 const dotenv = require('dotenv').config();
 const DB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 const User = require('./models/userModel');
 
 const app = express();
@@ -26,5 +27,6 @@ const startServer = async () => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
-
+app.use(express.json());
+app.use(authRoutes);
 startServer();
