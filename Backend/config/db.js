@@ -4,8 +4,8 @@ const colors = require('colors');
 
 const sequelize = new Sequelize(process.env.DB_URL, {
   dialect: 'postgres',
-  logging: (...msg) => console.log(msg),
-  // logging: false, // if the console output is too much
+  // logging: (...msg) => console.log(msg),
+  logging: false, // if the console output is too much
   dialectOptions: {
     ssl: {
       require: true,
