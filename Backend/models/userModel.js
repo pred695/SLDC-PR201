@@ -41,6 +41,15 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Password is required',
+        },
+        len: {
+          args: [8],
+          msg: 'Password must be at least 8 characters long',
+        },
+      },
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
