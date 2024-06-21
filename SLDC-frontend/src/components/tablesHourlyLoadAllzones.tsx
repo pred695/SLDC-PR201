@@ -1,6 +1,6 @@
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
-import { TableProperties } from '../Interfaces/tables';
 import { useState, useEffect } from 'react';
+import { TableProperties } from '../Interfaces/tables';
 
 interface IRowData {
   time: string;
@@ -16,11 +16,13 @@ const MyTableHourlyAllzones = (): JSX.Element => {
       try {
         const response = await fetch('http://localhost:3000/api/forecast');
         const data = await response.json();
-        const formattedData = data.map((row: { timestamp: string; actual: number; forecast: number }) => ({
-          time: new Date(row.timestamp).toLocaleTimeString(),
-          actual: row.actual,
-          forecast: row.forecast,
-        }));
+        const formattedData = data.map(
+          (row: { timestamp: string; actual: number; forecast: number }) => ({
+            time: new Date(row.timestamp).toLocaleTimeString(),
+            actual: row.actual,
+            forecast: row.forecast,
+          })
+        );
         setRowData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -45,7 +47,7 @@ const MyTableHourlyAllzones = (): JSX.Element => {
         color={TableProperties.color}
       >
         <Thead>
-        <Tr>
+          <Tr>
             <Th textAlign="center" color={TableProperties.color}>
               Timestamp
             </Th>

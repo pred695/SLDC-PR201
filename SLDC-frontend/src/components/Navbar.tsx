@@ -8,12 +8,46 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { GoOrganization, GoTriangleDown, GoTriangleUp } from 'react-icons/go';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
+import useAuthStore, { AuthState } from './Store/AuthStore';
+import { logOutUser, LogOutResponse } from '../utils/api';
 
 const Navbar: React.FC = () => {
+  const {
+    isAuth,
+    removeAuth,
+    setUserName,
+    setUserEmail,
+    setUserId,
+    isAdmin,
+    setAdmin,
+  }: Pick<
+    AuthState,
+    | 'isAuth'
+    | 'removeAuth'
+    | `setUserName`
+    | `setUserEmail`
+    | 'setUserId'
+    | 'isAdmin'
+    | 'setAdmin'
+  > = useAuthStore((state: AuthState) => ({
+    isAuth: state.isAuth,
+    removeAuth: state.removeAuth,
+    setUserName: state.setUserName,
+    setUserEmail: state.setUserEmail,
+    setUserId: state.setUserId,
+    isAdmin: state.isAdmin,
+    setAdmin: state.setAdmin,
+  }));
+  // eslint-disable-next-line
+  const toast = useToast();
+  // eslint-disable-next-line
+  const navigate = useNavigate();
   const menuList: { title: string; items: string[] }[] = [
     {
       title: 'Zones',
@@ -42,6 +76,36 @@ const Navbar: React.FC = () => {
     setOpenIndex(-1);
   };
 
+  const handleLogout = async (): Promise<void> => {
+    try {
+      const response: AxiosResponse<LogOutResponse> = await logOutUser();
+      if (response.status === 200) {
+        removeAuth();
+        setUserName('');
+        setUserEmail('');
+        setUserId('');
+        setAdmin(false);
+        toast({
+          title: 'Logged out successfully',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          onCloseComplete: () => {
+            navigate('/login');
+          },
+          position: 'top',
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Error logging out',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Flex
       w="100vw"
@@ -67,9 +131,9 @@ const Navbar: React.FC = () => {
               const isOpen: boolean = openIndex === index;
               return (
                 <Box
+                  key={index}
                   onMouseEnter={() => handleMouseEnter(index)}
                   onMouseLeave={handleMouseLeave}
-                  // key={index}
                 >
                   <Menu isOpen={isOpen}>
                     <MenuButton
@@ -99,9 +163,9 @@ const Navbar: React.FC = () => {
                       borderRadius={0}
                       p={2}
                     >
-                      {item.items.map((subItem: string) => (
+                      {item.items.map((subItem: string, subIndex: number) => (
                         <MenuItem
-                          // key={subIndex}
+                          key={subIndex}
                           p={2}
                           bgColor="sldcGray"
                           _hover={{ bgColor: 'sldcBlack' }}
@@ -118,10 +182,39 @@ const Navbar: React.FC = () => {
         </HStack>
       </HStack>
       <HStack fontWeight="bold" gap={6}>
+        {isAdmin && (
+          <Link to="/signup">
+            <Button
+              onClick={() => navigate('/signup')}
+              bgColor="sldcDarkBlue"
+              color="sldcWhite"
+              _hover={{ backgroundColor: 'sldcGray' }}
+            >
+              Register User
+            </Button>
+          </Link>
+        )}
         <Text>Account</Text>
-        <Link to="/signin">
-          <Text>Login</Text>
-        </Link>
+        {isAuth ? (
+          <Button
+            onClick={handleLogout}
+            bgColor="sldcDarkBlue"
+            color="sldcWhite"
+            _hover={{ backgroundColor: 'sldcGray' }}
+          >
+            Logout
+          </Button>
+        ) : (
+          <Link to="/login">
+            <Button
+              bgColor="sldcDarkBlue"
+              color="sldcWhite"
+              _hover={{ backgroundColor: 'sldcGray' }}
+            >
+              Login
+            </Button>
+          </Link>
+        )}
       </HStack>
     </Flex>
   );
