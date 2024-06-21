@@ -58,11 +58,12 @@ const handleLogInError = (err) => {
 };
 
 const maxAge = 86400; // 3 days in seconds
-const createToken = (username, userId) => {
+const createToken = (username, userId, isAdmin) => {
   return jwt.sign(
     {
       username: username,
       user_id: userId,
+      isAdmin: isAdmin,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: maxAge }

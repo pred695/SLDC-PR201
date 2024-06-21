@@ -4,7 +4,9 @@
   "description": "SLDC PR201 Backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .  --ext js --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint  . --ext js --fix --report-unused-disable-directives --max-warnings 0"
   },
   "repository": {
     "type": "git",

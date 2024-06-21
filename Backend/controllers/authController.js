@@ -39,10 +39,10 @@ const getAllUsers = async (req, resp) => {
 };
 
 // @desc Get a user by ID
-// @route GET /user/:id
+// @route GET /user/:user_id
 // @access Private
 const getUserById = async (req, resp) => {
-  const userId = req.params.id;
+  const userId = req.params.user_id;
   try {
     const user = await User.findByPk(userId);
     if (!user) {
@@ -55,7 +55,7 @@ const getUserById = async (req, resp) => {
 };
 
 // @desc Update a user by ID
-// @route PUT /user/:id
+// @route PUT /user/:user_id
 // @access Private
 const updateUser = async (req, resp) => {
   const userId = req.params.id;
@@ -78,7 +78,7 @@ const updateUser = async (req, resp) => {
 };
 
 // @desc Delete a user by ID
-// @route DELETE /user/:id
+// @route DELETE /user/:user_id
 // @access Private
 const deleteUser = async (req, resp) => {
   const userId = req.params.id;
@@ -106,7 +106,11 @@ const loginUser = async (req, resp) => {
     if (user) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
-        const token = authUtils.createToken(user.username, user.user_id);
+        const token = authUtils.createToken(
+          user.username,
+          user.user_id,
+          user.isAdmin
+        );
         console.log(token);
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log(decodedToken);
@@ -124,11 +128,11 @@ const loginUser = async (req, resp) => {
       } else {
         throw new Error('Incorrect password!!');
       }
-    } else if (user == null) {
+    } else if (user === null) {
       throw new Error('User not found');
     }
   } catch (err) {
-    resp.status(401).json(err);
+    resp.status(401).json('Credentials wrong!');
   }
 };
 // @desc    Log out a user
@@ -147,6 +151,32 @@ const logoutUser = async (req, resp) => {
   });
 };
 
+// @desc Make an user admin
+// @route PUT /make_admin/:user_id
+const updateAdmin = async (req, resp) => {
+  try {
+    const [updatedRowsCount] = await User.update(
+      {
+        isAdmin: true,
+      },
+      {
+        where: {
+          user_id: req.params.user_id,
+        },
+      }
+    );
+
+    if (updatedRowsCount === 0) {
+      return resp.status(404).json({ message: 'User not found' });
+    }
+
+    resp.status(200).json({ message: 'User updated successfully' });
+  } catch (err) {
+    console.error('Error updating user:', err);
+    resp.status(500).json({ message: 'An error occurred' });
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -155,4 +185,5 @@ module.exports = {
   deleteUser,
   loginUser,
   logoutUser,
+  updateAdmin,
 };
