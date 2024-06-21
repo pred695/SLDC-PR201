@@ -1,21 +1,33 @@
 import {
   Box,
   Button,
+  CreateToastFnReturn,
+  Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   HStack,
+  IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Text,
+  VStack,
+  useMediaQuery,
   useToast,
 } from '@chakra-ui/react';
+import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { GoOrganization, GoTriangleDown, GoTriangleUp } from 'react-icons/go';
-import { Link, useNavigate } from 'react-router-dom';
-import { AxiosResponse } from 'axios';
+import { MdMenu } from 'react-icons/md';
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
+import { LogOutResponse, logOutUser } from '../utils/api';
 import useAuthStore, { AuthState } from './Store/AuthStore';
-import { logOutUser, LogOutResponse } from '../utils/api';
 
 const Navbar: React.FC = () => {
   const {
@@ -30,8 +42,8 @@ const Navbar: React.FC = () => {
     AuthState,
     | 'isAuth'
     | 'removeAuth'
-    | `setUserName`
-    | `setUserEmail`
+    | 'setUserName'
+    | 'setUserEmail'
     | 'setUserId'
     | 'isAdmin'
     | 'setAdmin'
@@ -44,10 +56,19 @@ const Navbar: React.FC = () => {
     isAdmin: state.isAdmin,
     setAdmin: state.setAdmin,
   }));
-  // eslint-disable-next-line
-  const toast = useToast();
-  // eslint-disable-next-line
-  const navigate = useNavigate();
+
+  const toast: CreateToastFnReturn = useToast();
+  const navigate: NavigateFunction = useNavigate();
+  const [isMobile]: boolean[] = useMediaQuery('(max-width: 1100px)');
+  const [openIndex, setOpenIndex]: [
+    number,
+    React.Dispatch<React.SetStateAction<number>>,
+  ] = useState(-1);
+  const [isDrawerOpen, setDrawerOpen]: [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>,
+  ] = useState(false);
+
   const menuList: { title: string; items: string[] }[] = [
     {
       title: 'Zones',
@@ -62,11 +83,6 @@ const Navbar: React.FC = () => {
       items: ['Day Ahead', 'Mid Term', 'Long Term'],
     },
   ];
-
-  const [openIndex, setOpenIndex]: [
-    number,
-    React.Dispatch<React.SetStateAction<number>>,
-  ] = useState<number>(-1);
 
   const handleMouseEnter = (index: number): void => {
     setOpenIndex(index);
@@ -117,18 +133,19 @@ const Navbar: React.FC = () => {
       h="4.5rem"
       position="fixed"
       top={0}
+      zIndex={10}
     >
       <HStack gap={10}>
         <HStack spacing="1rem">
-          <GoOrganization size={35} />
-          <Text fontSize="1.7rem" fontWeight="bold">
+          <GoOrganization size={isMobile ? 25 : 35} />
+          <Text fontSize={isMobile ? '1.2rem' : '1.7rem'} fontWeight="bold">
             SLDC LOAD FORECASTING
           </Text>
         </HStack>
-        <HStack>
-          {menuList.map(
-            (item: { title: string; items: string[] }, index: number) => {
-              const isOpen: boolean = openIndex === index;
+        {!isMobile && (
+          <HStack>
+            {menuList.map((item, index) => {
+              const isOpen = openIndex === index;
               return (
                 <Box
                   key={index}
@@ -163,7 +180,7 @@ const Navbar: React.FC = () => {
                       borderRadius={0}
                       p={2}
                     >
-                      {item.items.map((subItem: string, subIndex: number) => (
+                      {item.items.map((subItem, subIndex) => (
                         <MenuItem
                           key={subIndex}
                           p={2}
@@ -177,12 +194,12 @@ const Navbar: React.FC = () => {
                   </Menu>
                 </Box>
               );
-            }
-          )}
-        </HStack>
+            })}
+          </HStack>
+        )}
       </HStack>
       <HStack fontWeight="bold" gap={6}>
-        {isAdmin && (
+        {isAdmin && !isMobile && (
           <Link to="/signup">
             <Button
               onClick={() => navigate('/signup')}
@@ -194,8 +211,8 @@ const Navbar: React.FC = () => {
             </Button>
           </Link>
         )}
-        <Text>Account</Text>
-        {isAuth ? (
+        {!isMobile && <Text>Account</Text>}
+        {!isMobile && isAuth && (
           <Button
             onClick={handleLogout}
             bgColor="sldcDarkBlue"
@@ -204,7 +221,8 @@ const Navbar: React.FC = () => {
           >
             Logout
           </Button>
-        ) : (
+        )}
+        {!isMobile && !isAuth && (
           <Link to="/login">
             <Button
               bgColor="sldcDarkBlue"
@@ -216,6 +234,92 @@ const Navbar: React.FC = () => {
           </Link>
         )}
       </HStack>
+      {isMobile && (
+        <IconButton
+          aria-label="Open menu"
+          icon={<MdMenu size={28} />}
+          bg="transparent"
+          color="sldcWhite"
+          onClick={() => setDrawerOpen(true)}
+        />
+      )}
+      <Drawer
+        isOpen={isDrawerOpen && isMobile}
+        placement="right"
+        onClose={() => setDrawerOpen(false)}
+      >
+        <DrawerOverlay />
+        <DrawerContent bg="sldcGray">
+          <DrawerCloseButton color="sldcWhite" />
+          <DrawerHeader color="sldcWhite">Menu</DrawerHeader>
+          <DrawerBody>
+            <VStack align="start" spacing={4}>
+              {menuList.map((item, index) => (
+                <Box key={index} w="full">
+                  <Text
+                    fontSize="1.2rem"
+                    fontWeight="bold"
+                    color="sldcWhite"
+                    mb={2}
+                  >
+                    {item.title}
+                  </Text>
+                  {item.items.map((subItem, subIndex) => (
+                    <Button
+                      key={subIndex}
+                      w="full"
+                      justifyContent="flex-start"
+                      bg="transparent"
+                      color="sldcWhite"
+                      _hover={{ bg: 'sldcBlack' }}
+                      mb={1}
+                    >
+                      {subItem}
+                    </Button>
+                  ))}
+                  {index < menuList.length - 1 && (
+                    <Divider borderColor="sldcWhite" my={4} />
+                  )}
+                </Box>
+              ))}
+              {isAdmin && (
+                <Link to="/signup" style={{ width: '100%' }}>
+                  <Button
+                    onClick={() => navigate('/signup')}
+                    bgColor="sldcDarkBlue"
+                    color="sldcWhite"
+                    _hover={{ backgroundColor: 'sldcGray' }}
+                    w="full"
+                  >
+                    Register User
+                  </Button>
+                </Link>
+              )}
+              <Button
+                onClick={handleLogout}
+                bgColor="sldcDarkBlue"
+                color="sldcWhite"
+                _hover={{ backgroundColor: 'sldcGray' }}
+                w="full"
+              >
+                Logout
+              </Button>
+              {!isAuth && (
+                <Link to="/login" style={{ width: '100%' }}>
+                  <Button
+                    bgColor="sldcDarkBlue"
+                    color="sldcWhite"
+                    _hover={{ backgroundColor: 'sldcGray' }}
+                    w="full"
+                  >
+                    Login
+                  </Button>
+                </Link>
+              )}
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Flex>
   );
 };
