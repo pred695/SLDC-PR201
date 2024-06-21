@@ -7,17 +7,16 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Checkbox,
   Text,
   useToast,
 } from '@chakra-ui/react';
 import React, { useState, useRef } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { AxiosResponse } from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { LoginData, loginUser, LoginResponse } from '../utils/api';
-import useAuthStore, { AuthState } from '../components/Store/AuthStore';
+import { SignUpData, SignUpResponse, signUpUser } from '../utils/api';
 
-const Login: React.FC = () => {
+const Signup: React.FC = () => {
   const [show, setShow]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
@@ -26,56 +25,41 @@ const Login: React.FC = () => {
     useRef<HTMLInputElement>(null);
   const passwordRef: React.RefObject<HTMLInputElement> =
     useRef<HTMLInputElement>(null);
-  const {
-    addAuth,
-    setUserName,
-    setUserEmail,
-    setUserId,
-    setAdmin,
-  }: Pick<
-    AuthState,
-    'addAuth' | 'setUserName' | 'setUserEmail' | 'setUserId' | 'setAdmin'
-  > = useAuthStore((state: AuthState) => ({
-    addAuth: state.addAuth,
-    setUserName: state.setUserName,
-    setUserEmail: state.setUserEmail,
-    setUserId: state.setUserId,
-    setAdmin: state.setAdmin,
-  }));
+  const emailRef: React.RefObject<HTMLInputElement> =
+    useRef<HTMLInputElement>(null);
+  const adminRef: React.RefObject<{ value: boolean }> = useRef<{
+    value: boolean;
+  }>({ value: false });
   // eslint-disable-next-line
   const toast = useToast();
-  // eslint-disable-next-line
-  const navigate = useNavigate();
   const handleSubmit = async (): Promise<void> => {
     try {
-      const loginData: LoginData = {
+      const signUpData: SignUpData = {
         username: usernameRef.current?.value as string,
         password: passwordRef.current?.value as string,
+        email: emailRef.current?.value as string,
+        isAdmin: adminRef.current?.value as boolean,
       };
-      const response: AxiosResponse<LoginResponse> = await loginUser(loginData); // not Promise<AxiosResponse<LoginResponse>> since await resolves it.
+      const response: AxiosResponse<SignUpResponse> =
+        await signUpUser(signUpData);
       if (response.status === 200) {
-        addAuth();
-        setUserName(response.data.username);
-        setUserEmail(response.data.email);
-        setUserId(response.data.user_id);
-        setAdmin(response.data.isAdmin);
         toast({
-          title: 'Success',
-          description: 'Logged In',
+          title: 'User Registered',
+          description: 'User has been registered successfully',
           status: 'success',
           duration: 3000,
           isClosable: true,
           position: 'top',
         });
-        navigate('/');
       }
-    } catch (err) {
+    } catch (err: any) {
       toast({
         title: 'Error',
-        description: 'Invalid Credentials',
+        description: err.response.data,
         status: 'error',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
     }
   };
@@ -84,7 +68,7 @@ const Login: React.FC = () => {
     <Box w="100vw" h="100vh" pt="10rem" bgColor="sldcBlack" color="sldcWhite">
       <Center>
         <Text fontSize="3rem" fontWeight="bold" mb="1.5rem">
-          Log In
+          Register a user
         </Text>
       </Center>
       <Center>
@@ -113,6 +97,21 @@ const Login: React.FC = () => {
             </FormControl>
             <FormControl isRequired>
               <FormLabel fontWeight="bold" fontSize="larger">
+                Email
+              </FormLabel>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email.."
+                mb="1rem"
+                border="none"
+                bgColor="sldcGray"
+                ref={emailRef}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
                 Password
               </FormLabel>
               <InputGroup>
@@ -132,15 +131,21 @@ const Login: React.FC = () => {
                     background="transparent"
                     color="sldcWhite"
                     _hover={{ background: 'transparent' }}
+                    onClick={() => setShow(!show)}
                   >
-                    {show ? (
-                      <FiEyeOff size="18" onClick={() => setShow(!show)} />
-                    ) : (
-                      <FiEye size="18" onClick={() => setShow(!show)} />
-                    )}
+                    {show ? <FiEyeOff size="18" /> : <FiEye size="18" />}
                   </Button>
                 </InputRightElement>
               </InputGroup>
+            </FormControl>
+            <FormControl>
+              <Checkbox
+                size="lg"
+                colorScheme="blue"
+                onChange={(e) => (adminRef.current!.value = e.target.checked)}
+              >
+                Admin
+              </Checkbox>
             </FormControl>
             <Text as="u">Forgot Password?</Text>
             <Center>
@@ -154,7 +159,7 @@ const Login: React.FC = () => {
                 }}
                 onClick={handleSubmit}
               >
-                Log In
+                Register
               </Button>
             </Center>
           </Box>
@@ -164,4 +169,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Signup;
