@@ -1,14 +1,19 @@
 import { Box, Flex } from '@chakra-ui/react';
-// import MainGraph from '../graphs/MainGraph';
-// import { mainData, labels } from '../tempData/mainData';
 import MyTableHourlyAllzones from '../components/tablesHourlyLoadAllzones';
 import MyTableTotal from '../components/tablesTotalLoad';
 import DailyReport from '../graphs/DailyReport';
 import React from 'react';
-import useStore from '../store/store';
+import useCompareStore from '../components/Store/CompareStore';
+import { useForecastDataStore } from '../components/Store/ForecastData';
 
 const Homepage = (): JSX.Element => {
-  const compare = useStore((state) => state.compare);
+  const compare = useCompareStore((state) => state.compare);
+  const { demand, getForecastData } = useForecastDataStore();
+
+  React.useEffect(() => {
+    getForecastData();
+  }, [getForecastData]);
+  
   return (
     <Flex
       w="100vw"
@@ -27,36 +32,44 @@ const Homepage = (): JSX.Element => {
         px="2rem"
       >
         <Flex direction={"column"} width="100%">
-          <Flex>
-          <Box
-            mb={['', '', '-4rem']}
-            mt={['', '', '-8rem']}
-            ml={['', '', '-22rem']}
-            mr={['', '', '-20rem']}
-          >
-            <DailyReport />
-            {/* <MainGraph data={mainData} labels={labels} /> */}
-          </Box>
           {
-            compare && (
-              <Box
-                mb={['', '', '-4rem']}
-                mt={['', '', '-8rem']}
-                ml={['', '', '-22rem']}
-                mr={['', '', '-20rem']}
-              >
-                <DailyReport />
-              </Box>
-            )
+            demand ?
+            <Flex>
+            <Box
+              mb={['', '', '-4rem']}
+              mt={['', '', '-8rem']}
+              ml={['', '', '-22rem']}
+              mr={['', '', '-20rem']}
+            >
+              <DailyReport />
+            </Box>
+            {
+              compare && (
+                <Box
+                  mb={['', '', '-4rem']}
+                  mt={['', '', '-8rem']}
+                  ml={['', '', '-22rem']}
+                  mr={['', '', '-20rem']}
+                >
+                  <DailyReport />
+                </Box>
+              )
+            }
+            </Flex>
+            : <Box>Loading...</Box>
           }
-          </Flex>
+          <Flex>
           <Box px="2rem" pt="2rem" maxWidth={['100%', '100%', '100%']}>
             <MyTableHourlyAllzones />
           </Box>
+          {compare && <Box width={{ base: '100%', md: '40%' }} p="2rem">
+            <MyTableTotal />
+          </Box>}
+          </Flex>
         </Flex>
-        <Box width={{ base: '100%', md: '40%' }} p="2rem">
+        {!compare && <Box width={{ base: '100%', md: '40%' }} p="2rem">
           <MyTableTotal />
-        </Box>
+        </Box>}
       </Flex>
     </Flex>
   );

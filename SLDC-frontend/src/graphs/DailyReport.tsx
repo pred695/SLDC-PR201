@@ -2,40 +2,18 @@ import React, { LegacyRef, useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import * as Plot from '@observablehq/plot';
 import { Flex, Button, Input } from '@chakra-ui/react';
-import useStore from '../store/store';
+import useCompareStore from '../components/Store/CompareStore';
 import GraphLegend from './GraphLegend';
+import { DemandData } from '../types/demandData';
+import { useForecastDataStore } from '../components/Store/ForecastData';
 
 const screenWidth = window.screen.width;
 
-interface DemandData {
-  time: string;
-  actual: number;
-  forecast: number;
-}
-
 export default function DailyReport() {
-  const generateData = (selected?: string): DemandData[] => {
-    const data: DemandData[] = [];
-    const now = new Date();
-    if(selected){
-      now.setHours(Number(selected.split(':')[0]));
-      now.setMinutes(Number(selected.split(':')[1]));
-    }
-    
-    for (let i = 0; i < 24; i++) {
-      let time = new Date(now.getTime() - i * 3600000).toISOString();
-      if (selected) {
-        time = new Date(now.getTime() + i * 3600000).toISOString();
-      }
-      const actual = Math.floor(Math.random() * 100) + 150;
-      const forecast = actual - Math.floor(Math.random() * 10);
-      data.push({ time, actual, forecast });
-    }
-    return data;
-  };
-  const compare = useStore((state) => state.compare);
-  const setCompare = useStore((state) => state.toggle);
-  const [demand, setDemand] = useState<DemandData[]>([]);
+  const compare = useCompareStore((state) => state.compare);
+  const setCompare = useCompareStore((state) => state.toggle);
+  const { demand } = useForecastDataStore();
+  const [filteredDemand, setFilteredDemand] = useState(demand);
   const [toggleMin, setToggleMin] = useState(false);
   const [toggleMax, setToggleMax] = useState(false);
   const actualMin = useRef<number | undefined>(undefined);
@@ -46,30 +24,25 @@ export default function DailyReport() {
   const [actualLoadPointed, setActualLoadPointed] = useState<number>(0);
   const [forecastPointed, setForecastPointed] = useState<number>(0);
   const [error, setError] = useState<number | undefined>();
-  const [plotInstance, setPlotInstance] = useState<HTMLElement | SVGSVGElement | null>(null);
+
+  const filterLast24HoursData = (data: DemandData[], startingDate?:string, endingDate?:string) => {
+    const endDate = startingDate || new Date("2023-06-01T00:00:00.000Z").toISOString();
+    const startDate = endingDate || new Date(new Date("2023-06-01T00:00:00.000Z").getTime() - 24 * 60 * 60 * 1000).toISOString();
+    return data.filter((item) => item.time >= startDate && item.time <= endDate);
+  };
+
+  const fetchData = async () => {
+      const filteredData = filterLast24HoursData(demand);
+      setFilteredDemand(filteredData);
+  
+      if (filteredData.length === 0) {
+        return;
+      }
+  };
 
   useEffect(() => {
-    const data = generateData();
-    setDemand(data);
-
-    if (data.length === 0) {
-      return;
-    }
-    let minPoint = data[0];
-    let maxPoint = data[0];
-
-    data.forEach((point) => {
-      if (point.actual < minPoint.actual) {
-        minPoint = point;
-      }
-      if (point.actual > maxPoint.actual) {
-        maxPoint = point;
-      }
-    });
-
-    setMinTime(minPoint.time);
-    setMaxTime(maxPoint.time);
-  }, []);
+    fetchData();
+  }, [demand]);
 
   useEffect(() => {
     if (!graphRef.current) {
@@ -86,25 +59,25 @@ export default function DailyReport() {
       marks: [
         Plot.axisY({ label: 'Load (MW)' }),
         Plot.gridY({ strokeDasharray: '3', strokeOpacity: 0.5 }),
-        Plot.areaY(demand, {
+        Plot.areaY(filteredDemand, {
           x: 'time',
           y: 'actual',
           fill: 'steelblue',
           fillOpacity: 0.2,
         }),
-        Plot.lineY(demand, {
+        Plot.lineY(filteredDemand, {
           x: 'time',
           y: 'actual',
           stroke: 'steelblue',
           strokeOpacity: 0.8,
         }),
-        Plot.lineY(demand, {
+        Plot.lineY(filteredDemand, {
           x: 'time',
           y: 'forecast',
-          stroke: '#000000',
+          stroke: 'green',
         }),
         Plot.ruleX(
-          demand,
+          filteredDemand,
           Plot.pointerX({
             x: 'time',
             stroke: 'blue',
@@ -112,7 +85,7 @@ export default function DailyReport() {
           })
         ),
         Plot.textX(
-          demand,
+          filteredDemand,
           Plot.pointerX({
             x: 'time',
             dy: -10,
@@ -122,7 +95,7 @@ export default function DailyReport() {
           })
         ),
         toggleMin
-          ? Plot.ruleX(demand, {
+          ? Plot.ruleX(filteredDemand, {
               x: 'time',
               y: 'actual',
               filter: (d) => d.actual === actualMin.current,
@@ -131,7 +104,7 @@ export default function DailyReport() {
             })
           : null,
         toggleMin
-          ? Plot.text(demand, {
+          ? Plot.text(filteredDemand, {
               x: 'time',
               y: 'actual',
               filter: (d) => d.actual === actualMin.current,
@@ -142,7 +115,7 @@ export default function DailyReport() {
             })
           : null,
         toggleMin
-          ? Plot.textX(demand, {
+          ? Plot.textX(filteredDemand, {
               x: 'time',
               dy: -5,
               fontSize: 15,
@@ -152,7 +125,7 @@ export default function DailyReport() {
             })
           : null,
         toggleMax
-          ? Plot.ruleX(demand, {
+          ? Plot.ruleX(filteredDemand, {
               x: 'time',
               y: 'actual',
               filter: (d) => d.actual === actualMax.current,
@@ -161,7 +134,7 @@ export default function DailyReport() {
             })
           : null,
         toggleMax
-          ? Plot.text(demand, {
+          ? Plot.text(filteredDemand, {
               x: 'time',
               y: 'actual',
               filter: (d) => d.actual === actualMax.current,
@@ -172,7 +145,7 @@ export default function DailyReport() {
             })
           : null,
         toggleMax
-          ? Plot.textX(demand, {
+          ? Plot.textX(filteredDemand, {
               x: 'time',
               dy: -5,
               fontSize: 15,
@@ -183,7 +156,6 @@ export default function DailyReport() {
           : null,
       ],
     });
-    setPlotInstance(plot);
     graphRef.current.append(plot);
 
     plot.addEventListener('input', () => {
@@ -199,7 +171,8 @@ export default function DailyReport() {
         graphRef.current.innerHTML = '';
       }
     };
-  }, [demand,
+  }, [
+    filteredDemand,
     toggleMin,
     toggleMax,
   ]);
@@ -208,13 +181,13 @@ export default function DailyReport() {
     <div className="flex">
       <GraphLegend
         text="Actual demand"
-        value={actualLoadPointed}
+        value = {Number(actualLoadPointed.toFixed(3))}
         unit="MW"
         color="steelblue"
       />
       <GraphLegend
         text="Forecast"
-        value={forecastPointed}
+        value={Number(forecastPointed.toFixed(3))}
         unit="MW"
         color="black"
       />
@@ -222,11 +195,26 @@ export default function DailyReport() {
   );
 
   useEffect(() => {
-    if (demand.length) {
+    if (filteredDemand.length) {
+      let minPoint = filteredDemand[0];
+      let maxPoint = filteredDemand[0];
+
+      filteredDemand.forEach((point: DemandData) => {
+        if (point.actual < minPoint.actual) {
+          minPoint = point;
+        }
+        if (point.actual > maxPoint.actual) {
+          maxPoint = point;
+        }
+      });
+
+      setMinTime(minPoint.time);
+      setMaxTime(maxPoint.time);
+
       let sum = 0;
       let e = 0;
 
-      demand.forEach((data) => {
+      filteredDemand.forEach((data) => {
         sum += data.actual || 0;
         if (data.actual != null && data.forecast != null) {
           e += Math.abs(data.actual - data.forecast);
@@ -237,30 +225,31 @@ export default function DailyReport() {
       e = Math.round(e * 100) / 100;
       setError(e);
     }
-  }, [demand]);
+  }, [filteredDemand]);
 
-const handleMinClick = () => {
-  setToggleMin(!toggleMin);
-  if (minTime && plotInstance) {
-    const minPoint = demand.find((d) => d.time === minTime);
-    if (minPoint) {
-      actualMin.current = minPoint.actual;
-      setActualLoadPointed(minPoint.actual);
-      setForecastPointed(minPoint.forecast);
+  const handleMinClick = () => {
+    setToggleMin(!toggleMin);
+    if (minTime) {
+      const minPoint = demand.find((d) => d.time === minTime);
+      if (minPoint) {
+        actualMin.current = minPoint.actual;
+        setActualLoadPointed(minPoint.actual);
+        setForecastPointed(minPoint.forecast);
+      }
     }
-  }
-};
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = e.target.value;
-    console.log(time.split('T')[1].slice(0, 5));
-    const data = generateData(time.split('T')[1].slice(0, 5));
-    setDemand(data);
+    const datetime = e.target.value;
+    const endTime = new Date(datetime).toISOString();
+    const startTime = new Date(new Date(datetime).getTime() + 24 * 60 * 60 * 1000).toISOString();
+    const filteredData = filterLast24HoursData(demand, startTime, endTime);
+    setFilteredDemand(filteredData);
   }
 
   const handleMaxClick = () => {
     setToggleMax(!toggleMax);
-    if (maxTime && plotInstance) {
+    if (maxTime) {
       const maxPoint = demand.find((d) => d.time === maxTime);
       if (maxPoint) {
         actualMax.current = maxPoint.actual;
@@ -271,12 +260,12 @@ const handleMinClick = () => {
   };
 
   return (
-    <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={compare?'50%':'60%'} zIndex={"0"} pos={"relative"}>
+    <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={compare ? '50%' : '60%'} zIndex={"0"} pos={"relative"}>
       <Flex>Daily Report</Flex>
       <Flex justify="space-between">
         {legends}
         <Flex>
-          <Input onChange={handleChange} placeholder='Select Date and Time' size='md' type='datetime-local'  bg={'#333'}/>
+          <Input onChange={handleChange} placeholder='Select Date and Time' size='md' type='datetime-local' bg={'#333'} />
         </Flex>
         <Flex gap={'10px'}>
           <Button onClick={handleMinClick}>Min</Button>

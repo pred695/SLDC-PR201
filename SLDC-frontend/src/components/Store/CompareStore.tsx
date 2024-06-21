@@ -5,9 +5,9 @@ type Store = {
   toggle: () => void
 }
 
-const useStore = create<Store>()((set) => ({
+const useCompareStore = create<Store>()((set) => ({
   compare: false,
   toggle: () => set((state) => ({ compare: !state.compare })),
 }))
 
-export default useStore
+export default useCompareStore

@@ -1,6 +1,7 @@
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 import { useState, useEffect } from 'react';
+import { useForecastDataStore } from './Store/ForecastData';
 
 interface IRowData {
   time: string;
@@ -10,25 +11,21 @@ interface IRowData {
 
 const MyTableHourlyAllzones = (): JSX.Element => {
   const [rowData, setRowData] = useState<IRowData[]>([]);
+  const { demand } = useForecastDataStore();
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/forecast');
-        const data = await response.json();
-        const formattedData = data.map((row: { timestamp: string; actual: number; forecast: number }) => ({
-          time: new Date(row.timestamp).toLocaleTimeString(),
-          actual: row.actual,
-          forecast: row.forecast,
-        }));
-        setRowData(formattedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      const data = demand.map((item) => ({
+        time: new Date(item.time).toUTCString(),
+        actual: Number(Number(item.actual).toFixed(3)),
+        forecast: Number(Number(item.forecast).toFixed(3)),
+      }));
+
+      setRowData(data);
     };
 
     fetchData();
-  }, []);
+  }, [demand]);
 
   return (
     <Box

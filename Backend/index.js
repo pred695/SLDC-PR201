@@ -10,7 +10,7 @@ const DB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const User = require('./models/userModel');
 const { Forecast, initForecastModel } = require('./models/forecastModel');
-const forecastRoutes = require('./routes/forecastRoutes'); // Import forecast routes
+const forecastRoutes = require('./routes/forecastRoutes');
 
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
@@ -24,6 +24,7 @@ const corsOptions = {
 const startServer = async () => {
   await DB.connect();
   User.initUserModel();
+  initForecastModel();
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`.yellow.bold);
   });
