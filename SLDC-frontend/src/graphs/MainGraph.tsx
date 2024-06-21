@@ -1,3 +1,4 @@
+import React from 'react';
 import Chart from 'react-apexcharts';
 import convertRemToPixels from '../utils/remToPixel.tsx';
 import { Box, Flex } from '@chakra-ui/react';
@@ -14,7 +15,7 @@ export default function MainGraph({
   data,
   labels,
 }: MainGraphProps): JSX.Element {
-  const series = data.map((d: any) => ({
+  const series = data.map((d) => ({
     name: capitalize(d.zone_name),
     type: d.type,
     data: d.data,

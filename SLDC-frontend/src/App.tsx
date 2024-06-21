@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import React, { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import OutlineGraph from './graphs/OutlineGraph';
@@ -8,7 +8,7 @@ import { mainData, labels } from './tempData/mainData';
 import DailyReport from './graphs/DailyReport';
 import Homepage from './pages/Homepage';
 
-const App: React.FC = (): JSX.Element => {
+const App = (): JSX.Element => {
   return (
     <>
       <Navbar />
