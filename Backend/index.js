@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use('/api', authRoutes);
+app.use(authRoutes);
 app.use('/api', forecastRoutes);
 
 // Serve frontend
