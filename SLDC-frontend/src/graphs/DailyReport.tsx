@@ -1,8 +1,8 @@
 import { LegacyRef, useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
-import GraphLegend from './GraphLegend';
 import * as Plot from '@observablehq/plot';
 import { Flex, Button } from '@chakra-ui/react';
+import GraphLegend from './GraphLegend';
 
 const screenWidth = window.screen.width;
 
@@ -43,7 +43,7 @@ export default function DailyReport() {
     let minPoint = data[0];
     let maxPoint = data[0];
 
-    data.forEach(point => {
+    data.forEach((point) => {
       if (point.actual < minPoint.actual) {
         minPoint = point;
       }
@@ -58,8 +58,8 @@ export default function DailyReport() {
 
   useEffect(() => {
     if (!graphRef.current) {
-        return;
-      }
+      return;
+    }
     const plot = Plot.plot({
       height: 500,
       width: Math.max(500, screenWidth - 100),
@@ -128,18 +128,18 @@ export default function DailyReport() {
   }, [demand]);
 
   const legends = (
-    <div className={'flex'}>
+    <div className="flex">
       <GraphLegend
-        text={'Actual demand'}
+        text="Actual demand"
         value={actualLoadPointed}
-        unit={'MW'}
-        color={'steelblue'}
+        unit="MW"
+        color="steelblue"
       />
       <GraphLegend
-        text={'Forecast'}
+        text="Forecast"
         value={forecastPointed}
-        unit={'MW'}
-        color={'black'}
+        unit="MW"
+        color="black"
       />
     </div>
   );
@@ -168,7 +168,9 @@ export default function DailyReport() {
       if (minPoint) {
         setActualLoadPointed(minPoint.actual);
         setForecastPointed(minPoint.forecast);
-        plotInstance.dispatchEvent(new CustomEvent('pointer', { detail: { time: minTime } }));
+        plotInstance.dispatchEvent(
+          new CustomEvent('pointer', { detail: { time: minTime } })
+        );
       }
     }
   };
@@ -179,26 +181,26 @@ export default function DailyReport() {
       if (maxPoint) {
         setActualLoadPointed(maxPoint.actual);
         setForecastPointed(maxPoint.forecast);
-        plotInstance.dispatchEvent(new CustomEvent('pointer', { detail: { time: maxTime } }));
+        plotInstance.dispatchEvent(
+          new CustomEvent('pointer', { detail: { time: maxTime } })
+        );
       }
     }
   };
 
   return (
-    <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={'60%'}>
+    <Flex direction="column" mx="375px" mt="150px" mb="50px" w="60%">
       <Flex>Daily Report</Flex>
-      <Flex justify={'space-between'}>
+      <Flex justify="space-between">
         {legends}
-        <Flex gap={'10px'}>
+        <Flex gap="10px">
           <Button onClick={handleMinClick}>Min</Button>
           <Button onClick={handleMaxClick}>Max</Button>
         </Flex>
       </Flex>
       <Flex ref={graphRef as LegacyRef<HTMLDivElement>} />
 
-      <Flex>
-        Error rate: {error ? error : '-'}%
-      </Flex>
+      <Flex>Error rate: {error || '-'}%</Flex>
     </Flex>
   );
 }

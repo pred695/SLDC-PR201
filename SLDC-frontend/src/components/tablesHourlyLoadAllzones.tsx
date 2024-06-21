@@ -1,51 +1,35 @@
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
+import { useState, useEffect } from 'react';
 
 interface IRowData {
   time: string;
-  eastZoneValue: string;
-  centralZoneValue: string;
-  westZoneValue: string;
-  raliwayZoneValue: string;
-  totalValue: string;
+  actual: number;
+  forecast: number;
 }
 
-const rowData: IRowData[] = [
-  {
-    time: '18:15',
-    eastZoneValue: '2887.15',
-    westZoneValue: '2889.20',
-    centralZoneValue: '2888.20',
-    raliwayZoneValue: '2888.20',
-    totalValue: '2888.20',
-  },
-  {
-    time: '18:30',
-    eastZoneValue: '2887.15',
-    westZoneValue: '2889.20',
-    centralZoneValue: '2888.20',
-    raliwayZoneValue: '2888.20',
-    totalValue: '2888.20',
-  },
-  {
-    time: '18:45',
-    eastZoneValue: '2887.15',
-    westZoneValue: '2889.20',
-    centralZoneValue: '2888.20',
-    raliwayZoneValue: '2888.20',
-    totalValue: '2888.20',
-  },
-  {
-    time: '18:45',
-    eastZoneValue: '2887.15',
-    westZoneValue: '2889.20',
-    centralZoneValue: '2888.20',
-    raliwayZoneValue: '2888.20',
-    totalValue: '2888.20',
-  },
-];
-
 const MyTableHourlyAllzones = (): JSX.Element => {
+  const [rowData, setRowData] = useState<IRowData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/forecast');
+        const data = await response.json();
+        const formattedData = data.map((row: { timestamp: string; actual: number; forecast: number }) => ({
+          time: new Date(row.timestamp).toLocaleTimeString(),
+          actual: row.actual,
+          forecast: row.forecast,
+        }));
+        setRowData(formattedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Box
       display={{ base: 'block', md: 'flex' }}
@@ -61,7 +45,7 @@ const MyTableHourlyAllzones = (): JSX.Element => {
         color={TableProperties.color}
       >
         <Thead>
-          <Tr>
+        <Tr>
             <Th textAlign="center" color={TableProperties.color}>
               Timestamp
             </Th>
@@ -83,21 +67,22 @@ const MyTableHourlyAllzones = (): JSX.Element => {
           </Tr>
         </Thead>
         <Tbody>
-          {rowData.map((row: IRowData) => (
+          {rowData.map((row, index) => (
             <Tr
               key={row.time}
               bg={
-                rowData.indexOf(row) % 2 === 0
+                index % 2 === 0
                   ? TableProperties.backgroundColor
                   : TableProperties.stripeColor
               }
             >
               <Td textAlign="center">{row.time}</Td>
-              <Td textAlign="center">{row.eastZoneValue}</Td>
-              <Td textAlign="center">{row.westZoneValue}</Td>
-              <Td textAlign="center">{row.centralZoneValue}</Td>
-              <Td textAlign="center">{row.raliwayZoneValue}</Td>
-              <Td textAlign="center">{row.totalValue}</Td>
+              <Td textAlign="center">{row.actual}</Td>
+              <Td textAlign="center">{}</Td>
+              <Td textAlign="center">{}</Td>
+              <Td textAlign="center">{}</Td>
+              <Td textAlign="center">{}</Td>
+              <Td textAlign="center">{}</Td>
             </Tr>
           ))}
         </Tbody>
