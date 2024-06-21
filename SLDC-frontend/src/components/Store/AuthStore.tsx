@@ -14,6 +14,7 @@ export interface AuthState {
   setUserId: (userId: string) => void;
   setAdmin: (isAdmin: boolean) => void;
 }
+// eslint-disable-next-line @typescript-eslint/typedef
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -23,42 +24,42 @@ const useAuthStore = create<AuthState>()(
       userId: '',
       isAdmin: false,
 
-      addAuth: () => {
-        set((state) => ({
+      addAuth: (): void => {
+        set((state: AuthState) => ({
           ...state,
           isAuth: true,
         }));
       },
 
-      removeAuth: () => {
-        set((state) => ({
+      removeAuth: (): void => {
+        set((state: AuthState) => ({
           ...state,
           isAuth: false,
         }));
       },
 
-      setUserName: (username: string) => {
-        set((state) => ({
+      setUserName: (username: string): void => {
+        set((state: AuthState) => ({
           ...state,
           username,
         }));
       },
 
-      setUserEmail: (userEmail: string) => {
-        set((state) => ({
+      setUserEmail: (userEmail: string): void => {
+        set((state: AuthState) => ({
           ...state,
           userEmail,
         }));
       },
 
-      setUserId: (userId: string) => {
-        set((state) => ({
+      setUserId: (userId: string): void => {
+        set((state: AuthState) => ({
           ...state,
           userId,
         }));
       },
-      setAdmin: (isAdmin: boolean) => {
-        set((state) => ({
+      setAdmin: (isAdmin: boolean): void => {
+        set((state: AuthState) => ({
           ...state,
           isAdmin,
         }));

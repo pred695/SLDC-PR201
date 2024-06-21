@@ -1,20 +1,24 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 
 const Homepage = () => {
-  const [rowData, setRowData] = useState<{ time: string; actual: number; forecast: number }[]>([]);
+  const [rowData, setRowData] = useState<
+    { time: string; actual: number; forecast: number }[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/forecast');
         const data = await response.json();
-        const formattedData = data.map((row: { timestamp: string; actual: number; predicted: number }) => ({
-          time: new Date(row.timestamp).toLocaleTimeString(),
-          actual: row.actual,
-          forecast: row.predicted,
-        }));
+        const formattedData = data.map(
+          (row: { timestamp: string; actual: number; predicted: number }) => ({
+            time: new Date(row.timestamp).toLocaleTimeString(),
+            actual: row.actual,
+            forecast: row.predicted,
+          })
+        );
         setRowData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -54,7 +58,11 @@ const Homepage = () => {
           {rowData.map((row, index) => (
             <Tr
               key={index}
-              bg={index % 2 === 0 ? TableProperties.backgroundColor : TableProperties.stripeColor}
+              bg={
+                index % 2 === 0
+                  ? TableProperties.backgroundColor
+                  : TableProperties.stripeColor
+              }
             >
               <Td textAlign="center">{row.time}</Td>
               <Td textAlign="center">{row.actual}</Td>
