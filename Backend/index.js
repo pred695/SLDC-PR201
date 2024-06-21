@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 // eslint-disable-next-line no-unused-vars
@@ -8,6 +9,8 @@ const cookieParser = require('cookie-parser');
 const DB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const User = require('./models/userModel');
+const { Forecast, initForecastModel } = require('./models/forecastModel');
+const forecastRoutes = require('./routes/forecastRoutes'); // Import forecast routes
 
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
@@ -30,5 +33,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use(authRoutes);
+app.use('/api', authRoutes);
+app.use('/api', forecastRoutes);
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, 'frontend/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
 startServer();

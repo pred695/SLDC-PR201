@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
-// eslint-disable-next-line no-unused-vars
-const colors = require('colors');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const sequelize = new Sequelize(process.env.DB_URL, {
   dialect: 'postgres',
-  // logging: (...msg) => console.log(msg),
   logging: false, // if the console output is too much
   dialectOptions: {
     ssl: {
@@ -25,6 +25,7 @@ const connect = async () => {
     console.error('Unable to connect to the database:'.red.bold, error);
   }
 };
+
 module.exports = {
   connect,
   sequelize,
