@@ -1,4 +1,4 @@
 export interface Load {
-    time: String;
-    load: number;
+  time: string;
+  load: number;
 }

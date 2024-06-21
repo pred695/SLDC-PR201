@@ -122,8 +122,10 @@ const loginUser = async (req, resp) => {
         }); // Set the cookie
 
         resp.status(200).json({
+          user_id: user.user_id,
           username: user.username,
           email: user.email,
+          isAdmin: user.isAdmin
         });
       } else {
         throw new Error('Incorrect password!!');
