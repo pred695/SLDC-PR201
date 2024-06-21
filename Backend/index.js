@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const DB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const User = require('./models/userModel');
-const { Forecast, initForecastModel } = require('./models/forecastModel');
+const Forecast = require('./models/forecastModel');
 const forecastRoutes = require('./routes/forecastRoutes'); // Import forecast routes
 
 const app = express();
@@ -24,6 +24,7 @@ const corsOptions = {
 const startServer = async () => {
   await DB.connect();
   User.initUserModel();
+  Forecast.initForecastModel();
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`.yellow.bold);
   });
