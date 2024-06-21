@@ -7,6 +7,7 @@ import { outlineData } from './tempData/outlineData';
 import { mainData, labels } from './tempData/mainData';
 import DailyReport from './graphs/DailyReport';
 import Homepage from './pages/Homepage';
+import Signup from './pages/Signup';
 
 const App = (): JSX.Element => {
   return (
@@ -15,7 +16,8 @@ const App = (): JSX.Element => {
       {/* <Sidebar /> */}
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/signin" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="/mainGraph"
           element={<MainGraph data={mainData} labels={labels} />}

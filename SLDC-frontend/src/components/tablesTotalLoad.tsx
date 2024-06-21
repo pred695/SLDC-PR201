@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
@@ -51,7 +51,11 @@ const Homepage = () => {
           {rowData.map((row, index) => (
             <Tr
               key={index}
-              bg={index % 2 === 0 ? TableProperties.backgroundColor : TableProperties.stripeColor}
+              bg={
+                index % 2 === 0
+                  ? TableProperties.backgroundColor
+                  : TableProperties.stripeColor
+              }
             >
               <Td textAlign="center">{row.time}</Td>
               <Td textAlign="center">{row.actual}</Td>

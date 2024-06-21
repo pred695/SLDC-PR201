@@ -1,6 +1,6 @@
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
-import { TableProperties } from '../Interfaces/tables';
 import { useState, useEffect } from 'react';
+import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
 
 interface IRowData {
@@ -42,7 +42,7 @@ const MyTableHourlyAllzones = (): JSX.Element => {
         color={TableProperties.color}
       >
         <Thead>
-        <Tr>
+          <Tr>
             <Th textAlign="center" color={TableProperties.color}>
               Timestamp
             </Th>
