@@ -26,9 +26,9 @@ export default function GraphLegend({
       onMouseLeave={() => setHovered(false)}
       onClick={() => setDisabled(!disabled)}
     >
-      <div className={'flex gap-1 items-center'}>
+      <div className="flex gap-1 items-center">
         <div
-          className={'rounded-full h-2 w-2'}
+          className="rounded-full h-2 w-2"
           style={{ backgroundColor: color }}
         />
         <span className="text-xs">{text}</span>

@@ -20,10 +20,7 @@ const App: React.FC = (): JSX.Element => {
           path="/mainGraph"
           element={<MainGraph data={mainData} labels={labels} />}
         />
-        <Route
-          path="/dailyReport"
-          element={<DailyReport />}
-        />
+        <Route path="/dailyReport" element={<DailyReport />} />
         <Route
           path="/outlineGraph"
           element={
