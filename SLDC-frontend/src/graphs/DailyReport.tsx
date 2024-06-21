@@ -1,9 +1,9 @@
 import React, { LegacyRef, useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
-import GraphLegend from './GraphLegend';
 import * as Plot from '@observablehq/plot';
 import { Flex, Button, Input } from '@chakra-ui/react';
 import useStore from '../store/store';
+import GraphLegend from './GraphLegend';
 
 const screenWidth = window.screen.width;
 
@@ -58,7 +58,7 @@ export default function DailyReport() {
     let minPoint = data[0];
     let maxPoint = data[0];
 
-    data.forEach(point => {
+    data.forEach((point) => {
       if (point.actual < minPoint.actual) {
         minPoint = point;
       }
@@ -73,8 +73,8 @@ export default function DailyReport() {
 
   useEffect(() => {
     if (!graphRef.current) {
-        return;
-      }
+      return;
+    }
     const plot = Plot.plot({
       height: 500,
       width: Math.max(500, screenWidth - 100),
@@ -205,18 +205,18 @@ export default function DailyReport() {
   ]);
 
   const legends = (
-    <div className={'flex'}>
+    <div className="flex">
       <GraphLegend
-        text={'Actual demand'}
+        text="Actual demand"
         value={actualLoadPointed}
-        unit={'MW'}
-        color={'steelblue'}
+        unit="MW"
+        color="steelblue"
       />
       <GraphLegend
-        text={'Forecast'}
+        text="Forecast"
         value={forecastPointed}
-        unit={'MW'}
-        color={'black'}
+        unit="MW"
+        color="black"
       />
     </div>
   );
@@ -273,7 +273,7 @@ const handleMinClick = () => {
   return (
     <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={compare?'50%':'60%'} zIndex={"0"} pos={"relative"}>
       <Flex>Daily Report</Flex>
-      <Flex justify={'space-between'}>
+      <Flex justify="space-between">
         {legends}
         <Flex>
           <Input onChange={handleChange} placeholder='Select Date and Time' size='md' type='datetime-local'  bg={'#333'}/>
@@ -286,9 +286,7 @@ const handleMinClick = () => {
       </Flex>
       <Flex ref={graphRef as LegacyRef<HTMLDivElement>} />
 
-      <Flex>
-        Error rate: {error ? error : '-'}%
-      </Flex>
+      <Flex>Error rate: {error || '-'}%</Flex>
     </Flex>
   );
 }

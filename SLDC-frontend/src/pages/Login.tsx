@@ -9,34 +9,48 @@ import {
   InputRightElement,
   Text,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-
-interface LoginData {
-  username: string;
-  password: string;
-}
+import { AxiosResponse } from 'axios';
+import { LoginData, loginUser, LoginResponse } from '../utils/api';
+import useAuthStore, { AuthState } from '../components/Store/AuthStore';
 
 const Login: React.FC = () => {
   const [show, setShow]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState<boolean>(false);
-  const [loginData, setLoginData]: [
-    LoginData,
-    React.Dispatch<React.SetStateAction<LoginData>>,
-  ] = useState<LoginData>({
-    username: '',
-    password: '',
-  });
-
-  const { username, password }: { username: string; password: string } =
-    loginData;
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setLoginData((prevState: LoginData) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+  const usernameRef: React.RefObject<HTMLInputElement> =
+    useRef<HTMLInputElement>(null);
+  const passwordRef: React.RefObject<HTMLInputElement> =
+    useRef<HTMLInputElement>(null);
+  const {
+    addAuth,
+    setUserName,
+    setUserEmail,
+    setUserId,
+    setAdmin,
+  }: Pick<
+    AuthState,
+    'addAuth' | 'setUserName' | 'setUserEmail' | 'setUserId' | 'setAdmin'
+  > = useAuthStore((state: AuthState) => ({
+    addAuth: state.addAuth,
+    setUserName: state.setUserName,
+    setUserEmail: state.setUserEmail,
+    setUserId: state.setUserId,
+    setAdmin: state.setAdmin,
+  }));
+  const handleSubmit = async (): Promise<void> => {
+    const loginData: LoginData = {
+      username: usernameRef.current?.value as string,
+      password: passwordRef.current?.value as string,
+    };
+    const response: AxiosResponse<LoginResponse> = await loginUser(loginData); // not Promise<AxiosResponse<LoginResponse>> since await resolves it.
+    setUserName(response.data.username);
+    setUserEmail(response.data.email);
+    setUserId(response.data.user_id);
+    setAdmin(response.data.isAdmin);
+    addAuth();
   };
 
   return (
@@ -57,18 +71,17 @@ const Login: React.FC = () => {
           <Box w="25rem">
             <FormControl isRequired>
               <FormLabel fontWeight="bold" fontSize="larger">
-                Email
+                Username
               </FormLabel>
               <Input
                 id="username"
                 name="username"
-                type="email"
-                placeholder="Email Address"
-                value={username}
-                onChange={onChange}
+                type="text"
+                placeholder="Username.."
                 mb="1rem"
                 border="none"
                 bgColor="sldcGray"
+                ref={usernameRef}
               />
             </FormControl>
             <FormControl isRequired>
@@ -81,11 +94,10 @@ const Login: React.FC = () => {
                   name="password"
                   type={show ? 'text' : 'password'}
                   placeholder="Password"
-                  value={password}
-                  onChange={onChange}
                   mb="0.5rem"
                   border="none"
                   bgColor="sldcGray"
+                  ref={passwordRef}
                 />
                 <InputRightElement>
                   <Button
@@ -113,6 +125,7 @@ const Login: React.FC = () => {
                 _hover={{
                   backgroundColor: 'sldcGray',
                 }}
+                onClick={handleSubmit}
               >
                 Log In
               </Button>

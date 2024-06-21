@@ -1,10 +1,10 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import convertRemToPixels from '../utils/remToPixel.tsx';
 import { Box, Flex } from '@chakra-ui/react';
+import { ApexOptions } from 'apexcharts';
+import convertRemToPixels from '../utils/remToPixel.tsx';
 import capitalize from '../utils/capitalize';
 import { GraphInputData } from '../types/GraphInputData';
-import { ApexOptions } from 'apexcharts';
 
 interface MainGraphProps {
   data: GraphInputData[];
@@ -72,8 +72,8 @@ export default function MainGraph({
     yaxis: {
       labels: {
         show: true,
-        formatter: function (value: number) {
-          return value.toFixed(2) + ' MW';
+        formatter(value: number) {
+          return `${value.toFixed(2)} MW`;
         },
       },
     },
