@@ -1,34 +1,29 @@
+import  { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 
-interface IRowData {
-  time: string;
-  actual: string;
-  forecast: string;
-}
+const Homepage = () => {
+  const [rowData, setRowData] = useState<{ time: string; actual: number; forecast: number }[]>([]);
 
-const rowData: IRowData[] = [
-  { time: '18:15', actual: '2887.15', forecast: '2887.15' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:15', actual: '2887.15', forecast: '2887.15' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-  { time: '18:30', actual: '2889.20', forecast: '2889.20' },
-  { time: '18:45', actual: '2890.30', forecast: '2890.30' },
-];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/forecast');
+        const data = await response.json();
+        const formattedData = data.map((row: { timestamp: string; actual: number; predicted: number }) => ({
+          time: new Date(row.timestamp).toLocaleTimeString(),
+          actual: row.actual,
+          forecast: row.predicted,
+        }));
+        setRowData(formattedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-const MyTableTotal = (): JSX.Element => {
+    fetchData();
+  }, []);
+
   return (
     <Box
       display={{ base: 'block', md: 'block' }}
@@ -56,14 +51,10 @@ const MyTableTotal = (): JSX.Element => {
           </Tr>
         </Thead>
         <Tbody>
-          {rowData.map((row: IRowData) => (
+          {rowData.map((row, index) => (
             <Tr
-              key={row.time}
-              bg={
-                rowData.indexOf(row) % 2 === 0
-                  ? TableProperties.backgroundColor
-                  : TableProperties.stripeColor
-              }
+              key={index}
+              bg={index % 2 === 0 ? TableProperties.backgroundColor : TableProperties.stripeColor}
             >
               <Td textAlign="center">{row.time}</Td>
               <Td textAlign="center">{row.actual}</Td>
@@ -76,4 +67,4 @@ const MyTableTotal = (): JSX.Element => {
   );
 };
 
-export default MyTableTotal;
+export default Homepage;
