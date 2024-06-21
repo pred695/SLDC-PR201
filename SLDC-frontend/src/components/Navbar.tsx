@@ -133,6 +133,7 @@ const Navbar: React.FC = () => {
       h="4.5rem"
       position="fixed"
       top={0}
+      zIndex={1}
       zIndex={10}
     >
       <HStack gap={10}>
