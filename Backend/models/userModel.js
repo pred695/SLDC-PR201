@@ -55,6 +55,9 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    region: {
+      type: DataTypes.STRING,
+    },
   },
   {
     createdAt: 'created_at',

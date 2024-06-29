@@ -10,11 +10,13 @@ const maxAge = 86400; // 3 days in seconds
 // @access Private
 const createUser = async (req, resp) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, isAdmin, region } = req.body;
     const newUser = await User.create({
       username: username,
       email: email,
       password: password,
+      isAdmin: isAdmin,
+      region: region,
     });
     resp.status(201).json({
       user: newUser,
@@ -125,7 +127,7 @@ const loginUser = async (req, resp) => {
           user_id: user.user_id,
           username: user.username,
           email: user.email,
-          isAdmin: user.isAdmin
+          isAdmin: user.isAdmin,
         });
       } else {
         throw new Error('Incorrect password!!');

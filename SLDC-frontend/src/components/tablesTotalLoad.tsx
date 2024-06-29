@@ -4,7 +4,9 @@ import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
 
 const Homepage = () => {
-  const [rowData, setRowData] = useState<{ time: string; actual: number; forecast: number }[]>([]);
+  const [rowData, setRowData] = useState<
+    { time: string; actual: number; forecast: number }[]
+  >([]);
   const { demand } = useForecastDataStore();
 
   useEffect(() => {
