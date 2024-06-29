@@ -32,15 +32,17 @@ const Login: React.FC = () => {
     setUserEmail,
     setUserId,
     setAdmin,
+    setUserRegion
   }: Pick<
     AuthState,
-    'addAuth' | 'setUserName' | 'setUserEmail' | 'setUserId' | 'setAdmin'
+    'addAuth' | 'setUserName' | 'setUserEmail' | 'setUserId' | 'setAdmin' | 'setUserRegion'
   > = useAuthStore((state: AuthState) => ({
     addAuth: state.addAuth,
     setUserName: state.setUserName,
     setUserEmail: state.setUserEmail,
     setUserId: state.setUserId,
     setAdmin: state.setAdmin,
+    setUserRegion: state.setUserRegion
   }));
   // eslint-disable-next-line
   const toast = useToast();
@@ -59,6 +61,7 @@ const Login: React.FC = () => {
         setUserEmail(response.data.email);
         setUserId(response.data.user_id);
         setAdmin(response.data.isAdmin);
+        setUserRegion(response.data.region);
         toast({
           title: 'Success',
           description: 'Logged In',

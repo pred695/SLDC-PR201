@@ -79,6 +79,7 @@ const initUserModel = async () => {
     console.error('Unable to synchronize the user model:', err);
   }
 };
+
 module.exports = {
   User,
   initUserModel,

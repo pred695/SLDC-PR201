@@ -19,7 +19,11 @@ const createUser = async (req, resp) => {
       region: region,
     });
     resp.status(201).json({
-      user: newUser,
+      user_id: newUser.user_id,
+      username: newUser.username,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
+      region: newUser.region,
     }); // Created status code
   } catch (err) {
     resp.status(500).json(err.errors[0].message);
@@ -128,6 +132,7 @@ const loginUser = async (req, resp) => {
           username: user.username,
           email: user.email,
           isAdmin: user.isAdmin,
+          region: user.region,
         });
       } else {
         throw new Error('Incorrect password!!');
