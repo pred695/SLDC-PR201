@@ -36,7 +36,8 @@ const Signup: React.FC = () => {
       };
       console.log(signUpData);
 
-      const response: AxiosResponse<SignUpResponse> = await signUpUser(signUpData);
+      const response: AxiosResponse<SignUpResponse> =
+        await signUpUser(signUpData);
       if (response.status === 201) {
         toast({
           title: 'User Registered',
@@ -149,11 +150,7 @@ const Signup: React.FC = () => {
               </InputGroup>
             </FormControl>
             <FormControl>
-              <Checkbox
-                size="lg"
-                colorScheme="blue"
-                ref={adminRef}
-              >
+              <Checkbox size="lg" colorScheme="blue" ref={adminRef}>
                 Admin
               </Checkbox>
             </FormControl>

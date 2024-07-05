@@ -8,6 +8,7 @@ import { mainData, labels } from './tempData/mainData';
 import DailyReport from './graphs/DailyReport';
 import Homepage from './pages/Homepage';
 import Signup from './pages/Signup';
+import ResetPassword from './pages/Reset';
 
 const App = (): JSX.Element => {
   return (
@@ -33,6 +34,7 @@ const App = (): JSX.Element => {
             />
           }
         />
+        <Route path="/forgotPassword" element={<ResetPassword />} />
       </Routes>
     </>
   );
