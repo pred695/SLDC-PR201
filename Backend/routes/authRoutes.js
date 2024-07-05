@@ -12,4 +12,7 @@ router.delete('/user/:user_id', AuthController.deleteUser);
 router.post('/login', AuthController.loginUser);
 router.get('/logout', AuthController.logoutUser);
 router.put('/make_admin/:user_id', AuthController.updateAdmin);
+router.post('/forgotPassword', AuthController.forgotPassword);
+router.get('/resetPassword/:user_id/:token', AuthController.getResetPassword);
+router.post('/resetPassword/:user_id/:token', AuthController.postResetPassword);
 module.exports = router;
