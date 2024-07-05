@@ -13,7 +13,7 @@ import {
 import React, { useState, useRef } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { AxiosResponse } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LoginData, loginUser, LoginResponse } from '../utils/api';
 import useAuthStore, { AuthState } from '../components/Store/AuthStore';
 
@@ -32,17 +32,22 @@ const Login: React.FC = () => {
     setUserEmail,
     setUserId,
     setAdmin,
-    setUserRegion
+    setUserRegion,
   }: Pick<
     AuthState,
-    'addAuth' | 'setUserName' | 'setUserEmail' | 'setUserId' | 'setAdmin' | 'setUserRegion'
+    | 'addAuth'
+    | 'setUserName'
+    | 'setUserEmail'
+    | 'setUserId'
+    | 'setAdmin'
+    | 'setUserRegion'
   > = useAuthStore((state: AuthState) => ({
     addAuth: state.addAuth,
     setUserName: state.setUserName,
     setUserEmail: state.setUserEmail,
     setUserId: state.setUserId,
     setAdmin: state.setAdmin,
-    setUserRegion: state.setUserRegion
+    setUserRegion: state.setUserRegion,
   }));
   // eslint-disable-next-line
   const toast = useToast();
@@ -145,7 +150,9 @@ const Login: React.FC = () => {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Text as="u">Forgot Password?</Text>
+            <Link to="/forgotPassword">
+              <Text as="u">Forgot Password?</Text>
+            </Link>
             <Center>
               <Button
                 size="lg"

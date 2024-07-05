@@ -31,6 +31,10 @@ export interface SignUpResponse {
 export interface LogOutResponse {
   message: string;
 }
+
+export interface ForgotPasswordResponse {
+  response: any;
+}
 export const loginUser = (
   loginData: LoginData
 ): Promise<AxiosResponse<LoginResponse>> => {
@@ -50,4 +54,16 @@ export const logOutUser = (): Promise<AxiosResponse<LogOutResponse>> => {
   return axios.get<LogOutResponse>(`${API_URL}/logout`, {
     withCredentials: true,
   });
+};
+
+export const forgotPassword = (
+  email: string
+): Promise<AxiosResponse<ForgotPasswordResponse>> => {
+  return axios.post<ForgotPasswordResponse>(
+    `${API_URL}/forgotPassword`,
+    email,
+    {
+      withCredentials: true,
+    }
+  );
 };

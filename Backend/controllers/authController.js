@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const { User } = require('../models/userModel');
 const authUtils = require('../utils/authUtils');
 
@@ -115,7 +116,8 @@ const loginUser = async (req, resp) => {
         const token = authUtils.createToken(
           user.username,
           user.user_id,
-          user.isAdmin
+          user.isAdmin,
+          user.email
         );
         console.log(token);
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -186,6 +188,98 @@ const updateAdmin = async (req, resp) => {
   }
 };
 
+// @desc Forgot Password
+// @route POST /forgotpassword
+// @access Public
+const forgotPassword = async (req, resp) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      resp.status(404).json({ message: 'User not found' });
+      return;
+    }
+    const secret = process.env.ACCESS_TOKEN_SECRET + user.password;
+    const token = jwt.sign(
+      { user_id: user.user_id, email: user.email, isAdmin: user.isAdmin },
+      secret,
+      { expiresIn: '15m' }
+    );
+    const url = `${process.env.CLIENT_URL}/resetpassword/${user.user_id}/${token}`;
+    console.log(url);
+    // eslint-disable-next-line no-unused-vars
+    const testAccount = await nodemailer.createTestAccount();
+    // connect with smtp
+    const transporter = await nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      auth: {
+        user: process.env.GMAIL_ADDRESS,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: '"SLDC" <laundrix5@gmail.com>',
+      to: email,
+      subject: 'Reset Password link from SLDC',
+      text: `Click on this link to reset your password: ${url}`,
+      html: `<b>Click on this link to reset your password: <a href="${url}">Reset Password</a></b>`,
+    });
+    console.log('Message sent: %s', info.messageId);
+    resp.status(200).json(info);
+  } catch (err) {}
+};
+
+const getResetPassword = async (req, resp) => {
+  try {
+    const { user_id, token } = req.params;
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      resp.status(404).json({ message: 'User not found' });
+      return;
+    }
+    const decodedToken = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET + user.password
+    );
+    resp.render('index', {
+      email: decodedToken.email,
+    });
+    console.log(decodedToken.email);
+    // resp.status(200).json({message: 'Token verified'});
+    console.log(user);
+  } catch (err) {
+    console.error(err);
+    resp.status(404).json({ message: 'Invalid token' });
+  }
+};
+const postResetPassword = async (req, resp) => {
+  const { user_id, token } = req.params;
+  const { password } = req.body;
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      resp.status(404).json({ message: 'User not found' });
+      return;
+    }
+    if (!password) {
+      return resp.status(401).render('index', {
+        status: 'not verified',
+        error: 'Password cannot be empty',
+      });
+    }
+    // const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET + user.password);
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    await User.update(
+      { password: encryptedPassword },
+      { where: { user_id: user_id } }
+    );
+    resp.status(200).json({ message: 'Password updated successfully' });
+  } catch (err) {
+    resp.status(404).json({ message: 'Error updating the password' });
+  }
+};
 module.exports = {
   createUser,
   getAllUsers,
@@ -195,4 +289,7 @@ module.exports = {
   loginUser,
   logoutUser,
   updateAdmin,
+  forgotPassword,
+  getResetPassword,
+  postResetPassword,
 };
