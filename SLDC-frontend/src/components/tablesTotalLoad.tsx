@@ -12,10 +12,10 @@ const Homepage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = demand.map((item) => ({
-        time: new Date(item.time).toUTCString(),
+        time: new Date(item.time).toUTCString().split(' ')[4].substring(0, 5),
         actual: Number(Number(item.actual).toFixed(3)),
         forecast: Number(Number(item.forecast).toFixed(3)),
-      }));
+      })).reverse();
 
       setRowData(data);
     };

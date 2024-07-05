@@ -6,6 +6,8 @@ import useCompareStore from '../components/Store/CompareStore';
 import GraphLegend from './GraphLegend';
 import { DemandData } from '../types/demandData';
 import { useForecastDataStore } from '../components/Store/ForecastData';
+import useAuthStore from '../components/Store/AuthStore';
+import { AuthState } from '../components/Store/AuthStore';
 
 const screenWidth = window.screen.width;
 
@@ -13,6 +15,10 @@ export default function DailyReport() {
   const compare = useCompareStore((state) => state.compare);
   const setCompare = useCompareStore((state) => state.toggle);
   const { demand } = useForecastDataStore();
+  const { userRegion } = useAuthStore((state: AuthState) => ({
+    userRegion: state.userRegion,
+  }));
+  const [currentRegion, setCurrentRegion] = useState<string>(userRegion);
   const [filteredDemand, setFilteredDemand] = useState(demand);
   const [toggleMin, setToggleMin] = useState(false);
   const [toggleMax, setToggleMax] = useState(false);
@@ -25,7 +31,7 @@ export default function DailyReport() {
   const [forecastPointed, setForecastPointed] = useState<number>(0);
   const [error, setError] = useState<number | undefined>();
 
-  const filterLast24HoursData = (
+  const filterLast30HoursData = (
     data: DemandData[],
     startingDate?: string,
     endingDate?: string
@@ -35,7 +41,7 @@ export default function DailyReport() {
     const startDate =
       endingDate ||
       new Date(
-        new Date('2023-06-01T00:00:00.000Z').getTime() - 24 * 60 * 60 * 1000
+        new Date('2023-06-01T00:00:00.000Z').getTime() - 30 * 60 * 60 * 1000
       ).toISOString();
     return data.filter(
       (item) => item.time >= startDate && item.time <= endDate
@@ -43,12 +49,22 @@ export default function DailyReport() {
   };
 
   const fetchData = async () => {
-    const filteredData = filterLast24HoursData(demand);
+    const filteredData = filterLast30HoursData(demand);
     setFilteredDemand(filteredData);
 
     if (filteredData.length === 0) {
     }
   };
+
+  useEffect(() => {
+    if (currentRegion !== userRegion) {
+      setFilteredDemand([]);
+    }
+    else{
+      const filteredData = filterLast30HoursData(demand);
+      setFilteredDemand(filteredData);
+    }
+  }, [currentRegion, userRegion]);
 
   useEffect(() => {
     fetchData();
@@ -251,7 +267,7 @@ export default function DailyReport() {
     const startTime = new Date(
       new Date(datetime).getTime() + 24 * 60 * 60 * 1000
     ).toISOString();
-    const filteredData = filterLast24HoursData(demand, startTime, endTime);
+    const filteredData = filterLast30HoursData(demand, startTime, endTime);
     setFilteredDemand(filteredData);
   };
 
@@ -280,7 +296,9 @@ export default function DailyReport() {
       <Flex>Daily Report</Flex>
       <Flex justify="space-between">
         {legends}
-        <Flex>
+        {
+          compare && (
+          <Flex>
           <Input
             onChange={handleChange}
             placeholder="Select Date and Time"
@@ -289,15 +307,26 @@ export default function DailyReport() {
             bg="#333"
           />
         </Flex>
-        <Flex gap="10px">
-          <Button onClick={handleMinClick}>Min</Button>
-          <Button onClick={handleMaxClick}>Max</Button>
-          <Button onClick={setCompare}>Compare</Button>
+          )
+        }
+        <Flex direction={"column"} justify={"center"} align={"flex-end"} gap={"5px"}>
+          <Flex gap="5px">
+            <Button onClick={handleMinClick} size="sm" >Min</Button>
+            <Button onClick={handleMaxClick} size="sm">Max</Button>
+            <Button onClick={setCompare} size="sm">Compare</Button>
+          </Flex>
+          <Flex gap="5px">
+            <Button onClick={() => setCurrentRegion('east')} size="sm">East</Button>
+            <Button onClick={() => setCurrentRegion('west')} size="sm">West</Button>
+            <Button onClick={() => setCurrentRegion('central')} size="sm">Central</Button>
+            <Button onClick={() => setCurrentRegion('railways')} size="sm">Railways</Button>
+            <Button onClick={() => setCurrentRegion('')} size="sm">Total</Button>
+          </Flex>
         </Flex>
       </Flex>
       <Flex ref={graphRef as LegacyRef<HTMLDivElement>} />
 
-      <Flex>Error rate: {error || '-'}%</Flex>
+      <Flex>Error rate: {error || '-'}</Flex>
     </Flex>
   );
 }
