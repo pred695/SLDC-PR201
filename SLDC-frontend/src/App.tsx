@@ -1,14 +1,15 @@
-import React, { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Login from './pages/Login';
-import OutlineGraph from './graphs/OutlineGraph';
-import MainGraph from './graphs/MainGraph';
-import { outlineData } from './tempData/outlineData';
-import { mainData, labels } from './tempData/mainData';
 import DailyReport from './graphs/DailyReport';
+import MainGraph from './graphs/MainGraph';
+import OutlineGraph from './graphs/OutlineGraph';
 import Homepage from './pages/Homepage';
-import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Report from './pages/Report';
 import ResetPassword from './pages/Reset';
+import Signup from './pages/Signup';
+import { labels, mainData } from './tempData/mainData';
+import { outlineData } from './tempData/outlineData';
 
 const App = (): JSX.Element => {
   return (
@@ -35,6 +36,7 @@ const App = (): JSX.Element => {
           }
         />
         <Route path="/forgotPassword" element={<ResetPassword />} />
+        <Route path="/report" element={<Report />} />
       </Routes>
     </>
   );
