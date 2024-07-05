@@ -55,6 +55,9 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    region: {
+      type: DataTypes.STRING,
+    },
   },
   {
     createdAt: 'created_at',
@@ -76,6 +79,7 @@ const initUserModel = async () => {
     console.error('Unable to synchronize the user model:', err);
   }
 };
+
 module.exports = {
   User,
   initUserModel,

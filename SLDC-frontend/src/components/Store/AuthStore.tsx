@@ -7,12 +7,14 @@ export interface AuthState {
   username: string;
   userEmail: string;
   userId: string;
+  userRegion: string;
   addAuth: () => void;
   removeAuth: () => void;
   setUserName: (username: string) => void;
   setUserEmail: (userEmail: string) => void;
   setUserId: (userId: string) => void;
   setAdmin: (isAdmin: boolean) => void;
+  setUserRegion: (userRegion: string) => void;
 }
 // eslint-disable-next-line @typescript-eslint/typedef
 const useAuthStore = create<AuthState>()(
@@ -22,6 +24,7 @@ const useAuthStore = create<AuthState>()(
       username: '',
       userEmail: '',
       userId: '',
+      userRegion: '',
       isAdmin: false,
 
       addAuth: (): void => {
@@ -62,6 +65,12 @@ const useAuthStore = create<AuthState>()(
         set((state: AuthState) => ({
           ...state,
           isAdmin,
+        }));
+      },
+      setUserRegion: (userRegion: string): void => {
+        set((state: AuthState) => ({
+          ...state,
+          userRegion,
         }));
       },
     }),

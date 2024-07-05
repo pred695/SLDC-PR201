@@ -11,21 +11,29 @@ export interface SignUpData {
   email: string;
   password: string;
   isAdmin: boolean;
+  region: string;
 }
 export interface LoginResponse {
   user_id: string;
   username: string;
   email: string;
   isAdmin: boolean;
+  region: string;
 }
 
 export interface SignUpResponse {
   user_id: string;
   username: string;
   isAdmin: boolean;
+  email: string;
+  region: string;
 }
 export interface LogOutResponse {
   message: string;
+}
+
+export interface ForgotPasswordResponse {
+  response: any;
 }
 export const loginUser = (
   loginData: LoginData
@@ -46,4 +54,16 @@ export const logOutUser = (): Promise<AxiosResponse<LogOutResponse>> => {
   return axios.get<LogOutResponse>(`${API_URL}/logout`, {
     withCredentials: true,
   });
+};
+
+export const forgotPassword = (
+  email: string
+): Promise<AxiosResponse<ForgotPasswordResponse>> => {
+  return axios.post<ForgotPasswordResponse>(
+    `${API_URL}/forgotPassword`,
+    email,
+    {
+      withCredentials: true,
+    }
+  );
 };

@@ -4,12 +4,12 @@ module.exports = {
       browser: true,
       es2021: true,
     },
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine":"auto"
-      }
-    ],
+    // "prettier/prettier": [
+    //   "error",
+    //   {
+    //     "endOfLine":"auto"
+    //   }
+    // ],
     extends: [
       'airbnb',
       'airbnb/hooks',

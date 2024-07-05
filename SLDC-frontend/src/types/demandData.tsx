@@ -1,5 +1,5 @@
 export interface DemandData {
-    time: string;
-    actual: number;
-    forecast: number;
+  time: string;
+  actual: number;
+  forecast: number;
 }

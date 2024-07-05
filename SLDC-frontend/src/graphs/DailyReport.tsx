@@ -25,19 +25,29 @@ export default function DailyReport() {
   const [forecastPointed, setForecastPointed] = useState<number>(0);
   const [error, setError] = useState<number | undefined>();
 
-  const filterLast24HoursData = (data: DemandData[], startingDate?:string, endingDate?:string) => {
-    const endDate = startingDate || new Date("2023-06-01T00:00:00.000Z").toISOString();
-    const startDate = endingDate || new Date(new Date("2023-06-01T00:00:00.000Z").getTime() - 24 * 60 * 60 * 1000).toISOString();
-    return data.filter((item) => item.time >= startDate && item.time <= endDate);
+  const filterLast24HoursData = (
+    data: DemandData[],
+    startingDate?: string,
+    endingDate?: string
+  ) => {
+    const endDate =
+      startingDate || new Date('2023-06-01T00:00:00.000Z').toISOString();
+    const startDate =
+      endingDate ||
+      new Date(
+        new Date('2023-06-01T00:00:00.000Z').getTime() - 24 * 60 * 60 * 1000
+      ).toISOString();
+    return data.filter(
+      (item) => item.time >= startDate && item.time <= endDate
+    );
   };
 
   const fetchData = async () => {
-      const filteredData = filterLast24HoursData(demand);
-      setFilteredDemand(filteredData);
-  
-      if (filteredData.length === 0) {
-        return;
-      }
+    const filteredData = filterLast24HoursData(demand);
+    setFilteredDemand(filteredData);
+
+    if (filteredData.length === 0) {
+    }
   };
 
   useEffect(() => {
@@ -171,17 +181,13 @@ export default function DailyReport() {
         graphRef.current.innerHTML = '';
       }
     };
-  }, [
-    filteredDemand,
-    toggleMin,
-    toggleMax,
-  ]);
+  }, [filteredDemand, toggleMin, toggleMax]);
 
   const legends = (
     <div className="flex">
       <GraphLegend
         text="Actual demand"
-        value = {Number(actualLoadPointed.toFixed(3))}
+        value={Number(actualLoadPointed.toFixed(3))}
         unit="MW"
         color="steelblue"
       />
@@ -242,10 +248,12 @@ export default function DailyReport() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const datetime = e.target.value;
     const endTime = new Date(datetime).toISOString();
-    const startTime = new Date(new Date(datetime).getTime() + 24 * 60 * 60 * 1000).toISOString();
+    const startTime = new Date(
+      new Date(datetime).getTime() + 24 * 60 * 60 * 1000
+    ).toISOString();
     const filteredData = filterLast24HoursData(demand, startTime, endTime);
     setFilteredDemand(filteredData);
-  }
+  };
 
   const handleMaxClick = () => {
     setToggleMax(!toggleMax);
@@ -260,14 +268,28 @@ export default function DailyReport() {
   };
 
   return (
-    <Flex direction={'column'} mx={'375px'} mt={'150px'} mb={'50px'} w={compare ? '50%' : '60%'} zIndex={"0"} pos={"relative"}>
+    <Flex
+      direction="column"
+      mx="375px"
+      mt="150px"
+      mb="50px"
+      w={compare ? '50%' : '60%'}
+      zIndex="0"
+      pos="relative"
+    >
       <Flex>Daily Report</Flex>
       <Flex justify="space-between">
         {legends}
         <Flex>
-          <Input onChange={handleChange} placeholder='Select Date and Time' size='md' type='datetime-local' bg={'#333'} />
+          <Input
+            onChange={handleChange}
+            placeholder="Select Date and Time"
+            size="md"
+            type="datetime-local"
+            bg="#333"
+          />
         </Flex>
-        <Flex gap={'10px'}>
+        <Flex gap="10px">
           <Button onClick={handleMinClick}>Min</Button>
           <Button onClick={handleMaxClick}>Max</Button>
           <Button onClick={setCompare}>Compare</Button>

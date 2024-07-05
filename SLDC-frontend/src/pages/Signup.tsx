@@ -17,32 +17,28 @@ import { AxiosResponse } from 'axios';
 import { SignUpData, SignUpResponse, signUpUser } from '../utils/api';
 
 const Signup: React.FC = () => {
-  const [show, setShow]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState<boolean>(false);
-  const usernameRef: React.RefObject<HTMLInputElement> =
-    useRef<HTMLInputElement>(null);
-  const passwordRef: React.RefObject<HTMLInputElement> =
-    useRef<HTMLInputElement>(null);
-  const emailRef: React.RefObject<HTMLInputElement> =
-    useRef<HTMLInputElement>(null);
-  const adminRef: React.RefObject<{ value: boolean }> = useRef<{
-    value: boolean;
-  }>({ value: false });
-  // eslint-disable-next-line
+  const [show, setShow] = useState(false);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const adminRef = useRef<HTMLInputElement>(null);
+  const regionRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
+
   const handleSubmit = async (): Promise<void> => {
     try {
       const signUpData: SignUpData = {
-        username: usernameRef.current?.value as string,
-        password: passwordRef.current?.value as string,
-        email: emailRef.current?.value as string,
-        isAdmin: adminRef.current?.value as boolean,
+        username: usernameRef.current?.value ?? '',
+        email: emailRef.current?.value ?? '',
+        password: passwordRef.current?.value ?? '',
+        isAdmin: adminRef.current?.checked ?? false,
+        region: regionRef.current?.value ?? '',
       };
+      console.log(signUpData);
+
       const response: AxiosResponse<SignUpResponse> =
         await signUpUser(signUpData);
-      if (response.status === 200) {
+      if (response.status === 201) {
         toast({
           title: 'User Registered',
           description: 'User has been registered successfully',
@@ -112,6 +108,21 @@ const Signup: React.FC = () => {
             </FormControl>
             <FormControl isRequired>
               <FormLabel fontWeight="bold" fontSize="larger">
+                Region
+              </FormLabel>
+              <Input
+                id="region"
+                name="region"
+                type="text"
+                placeholder="Region.."
+                mb="1rem"
+                border="none"
+                bgColor="sldcGray"
+                ref={regionRef}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
                 Password
               </FormLabel>
               <InputGroup>
@@ -139,11 +150,7 @@ const Signup: React.FC = () => {
               </InputGroup>
             </FormControl>
             <FormControl>
-              <Checkbox
-                size="lg"
-                colorScheme="blue"
-                onChange={(e) => (adminRef.current!.value = e.target.checked)}
-              >
+              <Checkbox size="lg" colorScheme="blue" ref={adminRef}>
                 Admin
               </Checkbox>
             </FormControl>
