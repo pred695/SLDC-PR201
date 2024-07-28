@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Button } from '@chakra-ui/react';
 import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
 
@@ -8,28 +8,37 @@ const Homepage = () => {
     { time: string; actual: number; forecast: number }[]
   >([]);
   const { demand } = useForecastDataStore();
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 11;
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = demand.map((item) => ({
-        time: new Date(item.time).toUTCString(),
+      const data: { time: string; actual: number; forecast: number }[] = demand.map((item) => ({
+        time: new Date(item.time).toUTCString().replace(' GMT', ''),
         actual: Number(Number(item.actual).toFixed(3)),
         forecast: Number(Number(item.forecast).toFixed(3)),
       }));
 
-      setRowData(data);
+      setRowData(data.slice(0, rowsPerPage * page));
     };
 
     fetchData();
-  }, [demand]);
+  }, [demand, page]);
+
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
   return (
+    <>
     <Box
       display={{ base: 'block', md: 'block' }}
+      height={{ base: 'auto', md: 'auto' }}
       width="100%"
       overflowY="auto"
       borderRadius={TableProperties.borderRadius}
-      maxHeight="100vh"
+      pl={['0rem', '0rem', '0rem']}
+      maxHeight="82vh"
     >
       <Table
         variant={TableProperties.variant}
@@ -67,6 +76,14 @@ const Homepage = () => {
         </Tbody>
       </Table>
     </Box>
+    <div>
+    {rowData.length < demand.length && (
+        <Button onClick={loadMore} mt={4}>
+          Load More
+        </Button>
+      )}
+    </div>
+    </>
   );
 };
 
