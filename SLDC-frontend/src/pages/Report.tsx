@@ -13,6 +13,7 @@ import {
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useEffect, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import useCompareStore from '../components/Store/CompareStore';
 import { useForecastDataStore } from '../components/Store/ForecastData';
 import MyTableHourlyAllzones from '../components/tablesHourlyLoadAllzones';
@@ -30,6 +31,7 @@ const Report = () => {
 
   const downloadPDF = () => {
     const input = pdfRef.current;
+    setExpandTable(true);
     html2canvas(input)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -46,7 +48,25 @@ const Report = () => {
       })
       .catch((error) => {
         console.error('Error generating PDF:', error);
+        setExpandTable(false);
       });
+    setExpandTable(false);
+  };
+
+  const downloadExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(
+      demand.map((item) => ({
+        Timestamp: new Date(item.time).toUTCString(),
+        'East Side': item.actual,
+        'West Side': '',
+        'Central Side': '',
+        Railways: '',
+        Total: '',
+      }))
+    );
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'report.xlsx');
   };
 
   return (
@@ -116,6 +136,7 @@ const Report = () => {
                 my={2}
                 bg="sldcBlack"
                 _hover={{ color: 'sldcBlack' }}
+                onClick={downloadExcel}
               >
                 Excel
               </MenuItem>
