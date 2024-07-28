@@ -1,4 +1,4 @@
-import { Table, Thead, Tbody, Tr, Th, Td, Box } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Button } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
@@ -12,29 +12,36 @@ interface IRowData {
 const MyTableHourlyAllzones = (): JSX.Element => {
   const [rowData, setRowData] = useState<IRowData[]>([]);
   const { demand } = useForecastDataStore();
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 11;
 
   useEffect(() => {
     const fetchData = async () => {
       const data = demand.map((item) => ({
-        time: new Date(item.time).toUTCString(),
+        time: new Date(item.time).toUTCString().replace(' GMT', ''),
         actual: Number(Number(item.actual).toFixed(3)),
         forecast: Number(Number(item.forecast).toFixed(3)),
       }));
 
-      setRowData(data);
+      setRowData(data.slice(0, rowsPerPage * page));
     };
 
     fetchData();
-  }, [demand]);
+  }, [demand, page]);
+
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
   return (
+    <>
     <Box
       display={{ base: 'block', md: 'flex' }}
       height={{ base: 'auto', md: 'auto' }}
       overflowY="auto"
       borderRadius={TableProperties.borderRadius}
       pl={['0rem', '0rem', '0rem']}
-      maxHeight="20vh"
+      maxHeight="30vh"
     >
       <Table
         variant={TableProperties.variant}
@@ -85,6 +92,14 @@ const MyTableHourlyAllzones = (): JSX.Element => {
         </Tbody>
       </Table>
     </Box>
+    <div>
+    {rowData.length < demand.length && (
+        <Button onClick={loadMore} mt={4}>
+          Load More
+        </Button>
+      )}
+    </div>
+    </>
   );
 };
 

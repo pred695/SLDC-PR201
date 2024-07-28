@@ -82,6 +82,13 @@
         font-size: 1.1rem;
       }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+     <script>
+       function onSubmit(token) {
+         document.getElementById("forgot-password-form").submit();
+       }
+     </script>
+
   </head>
   <body>
     <nav class="navbar">
@@ -96,7 +103,7 @@
         <div>
           <p class="form_heading">Reset Password</p>
         </div>
-        <form action="" method="post" class="form">
+        <form action="" method="post" class="form" id="forgot-password-form">
           <div>
             <label for="password">Password</label><br />
             <input
@@ -107,7 +114,7 @@
               placeholder="Password"
             />
           </div>
-          <button type="submit" class="submit_btn">Submit</button>
+          <button class="g-recaptcha" data-sitekey="6LcVJQkqAAAAALiHKScqg3n1YMpBncLMlmnJ9IW4" data-callback="onSubmit">Submit</button>
         </form>
       </div>
     </div>
