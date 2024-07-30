@@ -280,6 +280,7 @@ const postResetPassword = async (req, resp) => {
     resp.status(404).json({ message: 'Error updating the password' });
   }
 };
+
 module.exports = {
   createUser,
   getAllUsers,

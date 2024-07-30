@@ -34,7 +34,7 @@ export const useForecastDataStore = create<ForecastDataState>((set) => ({
         time: item.timestamp,
         actual: item.actual,
         forecast: item.predicted,
-      }));
+      })).reverse(); // Reversing the data to show the latest data first
 
       set({ demand: data });
     } catch (error) {
