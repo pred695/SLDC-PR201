@@ -25,6 +25,24 @@ const User = sequelize.define(
         },
       },
     },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'First name is required',
+        },
+      },
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Last name is required',
+        },
+      },
+    },
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -56,6 +74,18 @@ const User = sequelize.define(
       defaultValue: false,
     },
     region: {
+      type: DataTypes.STRING,
+    },
+    phone_number: {
+      type: DataTypes.STRING,
+      validate: {
+        is: {
+          args: /^[0-9]{10}$/,
+          msg: 'Invalid phone number',
+        },
+      },
+    },
+    designation: {
       type: DataTypes.STRING,
     },
   },
