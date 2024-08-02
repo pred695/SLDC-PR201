@@ -8,11 +8,11 @@ export interface LoginData {
 
 export interface SignUpData {
   username: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
-  phone: string;
+  phone_number: string;
   isAdmin: boolean;
   designation: string;
   region: string;

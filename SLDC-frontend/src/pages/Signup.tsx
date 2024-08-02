@@ -15,6 +15,7 @@ import React, { useState, useRef } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { AxiosResponse } from 'axios';
 import { SignUpData, SignUpResponse, signUpUser } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const Signup: React.FC = () => {
   const [show, setShow] = useState(false);
@@ -28,17 +29,17 @@ const Signup: React.FC = () => {
   const phoneRef = useRef<HTMLInputElement>(null);
   const designationRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
-
+  const navigate = useNavigate();
   const handleSubmit = async (): Promise<void> => {
     try {
       const signUpData: SignUpData = {
         username: usernameRef.current?.value ?? '',
-        firstName: firstNameRef.current?.value ?? '',
-        lastName: lastNameRef.current?.value ?? '',
+        first_name: firstNameRef.current?.value ?? '',
+        last_name: lastNameRef.current?.value ?? '',
         email: emailRef.current?.value ?? '',
         password: passwordRef.current?.value ?? '',
         isAdmin: adminRef.current?.checked ?? false,
-        phone: phoneRef.current?.value ?? '',
+        phone_number: phoneRef.current?.value ?? '',
         designation: designationRef.current?.value ?? '',
         region: regionRef.current?.value ?? '',
       };
@@ -55,6 +56,7 @@ const Signup: React.FC = () => {
           isClosable: true,
           position: 'top',
         });
+        navigate('/signup');
       }
     } catch (err: any) {
       toast({
