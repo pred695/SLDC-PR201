@@ -11,13 +11,27 @@ const maxAge = 86400; // 3 days in seconds
 // @access Private
 const createUser = async (req, resp) => {
   try {
-    const { username, email, password, isAdmin, region } = req.body;
+    const {
+      username,
+      first_name,
+      last_name,
+      email,
+      password,
+      isAdmin,
+      region,
+      phone_number,
+      designation,
+    } = req.body;
     const newUser = await User.create({
       username: username,
+      first_name: first_name,
+      last_name: last_name,
       email: email,
       password: password,
       isAdmin: isAdmin,
       region: region,
+      phone_number: phone_number,
+      designation: designation,
     });
     resp.status(201).json({
       user_id: newUser.user_id,
@@ -199,6 +213,7 @@ const forgotPassword = async (req, resp) => {
       resp.status(404).json({ message: 'User not found' });
       return;
     }
+    console.log(user);
     const secret = process.env.ACCESS_TOKEN_SECRET + user.password;
     const token = jwt.sign(
       { user_id: user.user_id, email: user.email, isAdmin: user.isAdmin },
@@ -228,7 +243,9 @@ const forgotPassword = async (req, resp) => {
     });
     console.log('Message sent: %s', info.messageId);
     resp.status(200).json(info);
-  } catch (err) {}
+  } catch (err) {
+    // eslint-disable-next-line no-console
+  }
 };
 
 const getResetPassword = async (req, resp) => {
