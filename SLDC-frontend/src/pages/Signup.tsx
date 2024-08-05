@@ -19,19 +19,27 @@ import { SignUpData, SignUpResponse, signUpUser } from '../utils/api';
 const Signup: React.FC = () => {
   const [show, setShow] = useState(false);
   const usernameRef = useRef<HTMLInputElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const adminRef = useRef<HTMLInputElement>(null);
   const regionRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const designationRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
   const handleSubmit = async (): Promise<void> => {
     try {
       const signUpData: SignUpData = {
         username: usernameRef.current?.value ?? '',
+        firstName: firstNameRef.current?.value ?? '',
+        lastName: lastNameRef.current?.value ?? '',
         email: emailRef.current?.value ?? '',
         password: passwordRef.current?.value ?? '',
         isAdmin: adminRef.current?.checked ?? false,
+        phone: phoneRef.current?.value ?? '',
+        designation: designationRef.current?.value ?? '',
         region: regionRef.current?.value ?? '',
       };
       console.log(signUpData);
@@ -61,7 +69,14 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <Box w="100vw" h="100vh" pt="10rem" bgColor="sldcBlack" color="sldcWhite">
+    <Box
+      w="100%"
+      h="100%"
+      pt="10rem"
+      pb="10rem"
+      bgColor="sldcBlack"
+      color="sldcWhite"
+    >
       <Center>
         <Text fontSize="3rem" fontWeight="bold" mb="1.5rem">
           Register a user
@@ -89,6 +104,36 @@ const Signup: React.FC = () => {
                 border="none"
                 bgColor="sldcGray"
                 ref={usernameRef}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
+                First Name
+              </FormLabel>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="First Name.."
+                mb="1rem"
+                border="none"
+                bgColor="sldcGray"
+                ref={firstNameRef}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
+                Last Name
+              </FormLabel>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="LastName.."
+                mb="1rem"
+                border="none"
+                bgColor="sldcGray"
+                ref={lastNameRef}
               />
             </FormControl>
             <FormControl isRequired>
@@ -135,6 +180,62 @@ const Signup: React.FC = () => {
                   border="none"
                   bgColor="sldcGray"
                   ref={passwordRef}
+                />
+                <InputRightElement>
+                  <Button
+                    p={0}
+                    background="transparent"
+                    color="sldcWhite"
+                    _hover={{ background: 'transparent' }}
+                    onClick={() => setShow(!show)}
+                  >
+                    {show ? <FiEyeOff size="18" /> : <FiEye size="18" />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
+                Phone Number
+              </FormLabel>
+              <InputGroup>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="Phone Number"
+                  mb="0.5rem"
+                  border="none"
+                  bgColor="sldcGray"
+                  ref={phoneRef}
+                />
+                <InputRightElement>
+                  <Button
+                    p={0}
+                    background="transparent"
+                    color="sldcWhite"
+                    _hover={{ background: 'transparent' }}
+                    onClick={() => setShow(!show)}
+                  >
+                    {show ? <FiEyeOff size="18" /> : <FiEye size="18" />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel fontWeight="bold" fontSize="larger">
+                Designation
+              </FormLabel>
+              <InputGroup>
+                <Input
+                  id="designation"
+                  name="designation"
+                  type="text"
+                  placeholder="Designation"
+                  mb="0.5rem"
+                  border="none"
+                  bgColor="sldcGray"
+                  ref={designationRef}
                 />
                 <InputRightElement>
                   <Button
