@@ -1,4 +1,4 @@
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Button } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Button, Flex } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { TableProperties } from '../Interfaces/tables';
 import { useForecastDataStore } from './Store/ForecastData';
@@ -18,10 +18,10 @@ const MyTableHourlyAllzones = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async () => {
       const data = demand.map((item) => ({
-        time: new Date(item.time).toUTCString().replace(' GMT', ''),
+        time: new Date(item.time).toUTCString().split(' ')[4].substring(0, 5),
         actual: Number(Number(item.actual).toFixed(3)),
         forecast: Number(Number(item.forecast).toFixed(3)),
-      }));
+      })).reverse();
 
       setRowData(data.slice(0, rowsPerPage * page));
     };
@@ -34,7 +34,10 @@ const MyTableHourlyAllzones = (): JSX.Element => {
   };
 
   return (
-    <>
+    <Flex
+    direction={"column"}
+    justify={'center'}
+    align={'center'}>
     <Box
       display={{ base: 'block', md: 'flex' }}
       height={{ base: 'auto', md: 'auto' }}
@@ -42,6 +45,9 @@ const MyTableHourlyAllzones = (): JSX.Element => {
       borderRadius={TableProperties.borderRadius}
       pl={['0rem', '0rem', '0rem']}
       maxHeight="30vh"
+      w={"65rem"}
+      mx={"auto"}
+      pt={'20px'}
     >
       <Table
         variant={TableProperties.variant}
@@ -99,7 +105,7 @@ const MyTableHourlyAllzones = (): JSX.Element => {
         </Button>
       )}
     </div>
-    </>
+    </Flex>
   );
 };
 
